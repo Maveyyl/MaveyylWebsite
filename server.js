@@ -1,8 +1,10 @@
 var express = require('express');
 var http = require('http');
+var path = require("path");
 
 
 var app = express();
+app.use(express.static('.')); // set public all the files in the folder
 
 // Create an HTTP service.
 var server = http.createServer(app).listen(80, function(){
@@ -13,6 +15,7 @@ var server = http.createServer(app).listen(80, function(){
 });
 
 
-app.get('*', function (req, res) {
-	res.sendFile( __dirname + '/index.html');
+// anything that is not a static file (since main folder is public) will receive index.html
+app.get('*', function (req, res) { 
+	res.sendFile(path.join(__dirname+'/index.html'));
 });
