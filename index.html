@@ -5,23 +5,37 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
 
-	<!-- 1. Load libraries -->
+
+	<!-- Angular2 -->
 	<!-- IE required polyfill -->
 	<script src="node_modules/es6-shim/es6-shim.min.js"></script>
 
 	<script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
 
 	<script src="node_modules/rxjs/bundles/Rx.umd.js"></script>
 	<script src="node_modules/angular2/bundles/angular2-all.umd.js"></script>
+	<script src="node_modules/angular2/bundles/router.dev.js"></script>
 
-	<!-- 2. Load our 'modules' -->
+	<!-- jquery -->
+	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" 
+	<script src='node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
+
+
+	<!-- Angular2 specific modules -->
 	<script src='app/app.component.js'></script>
 	<script src='app/main.js'></script>
 
 </head>
 
-<!-- 3. Display the application -->
+<!-- Mandatory for Angular2 router -->
+<base href="/">
+
 <body>
+	<!-- Element that will contain Angular2 app -->
 	<maveyyl-website-app>Loading...</maveyyl-website-app>
 </body>
 

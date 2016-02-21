@@ -1,0 +1,8 @@
+<h1>Maveyyl Website</h1>
+
+<nav>
+	<a *ngFor="#item of settings.routeStructure" [routerLink]="[item.name]">{{item.description}}</a> 
+</nav>
+
+
+<router-outlet></router-outlet>
