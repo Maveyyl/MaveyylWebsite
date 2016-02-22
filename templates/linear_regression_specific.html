@@ -44,11 +44,18 @@
 		</div>
 		
 	</div>
+	<div class="row">
+		<button class="btn btn-default" (click)="addRow($event)">add row</button>
+		<button class="btn btn-default" (click)="removeRow($event)">remove row</button>
+		<button class="btn btn-default" (click)="addColumn($event)">add column</button>
+		<button class="btn btn-default" (click)="removeColumn($event)">remove column</button>
+		<br>
+		<button class="btn btn-default" (click)="update($event)">update</button>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<svg id="linear-regression-graph"></svg>
+		</div>
+	</div>
 
-	<button class="btn btn-default" (click)="addRow($event)">add row</button>
-	<button class="btn btn-default" (click)="removeRow($event)">remove row</button>
-	<button class="btn btn-default" (click)="addColumn($event)">add column</button>
-	<button class="btn btn-default" (click)="removeColumn($event)">remove column</button>
-	<br>
-	<button class="btn btn-default" (click)="update($event)">update</button>
 </div>
