@@ -1,7 +1,66 @@
-<h1>Maveyyl Website</h1>
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<!-- Brand, click on it will automatically redirect to the home page -->
+			<a class="navbar-brand" [routerLink]="[settings.routeStructure[0].name]">Maveyyl Website</a>
+		</div>
 
-<nav>
-	<a *ngFor="#item of settings.routeStructure" [routerLink]="[item.name]">{{item.description}}</a> 
+		<!-- navbar -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<!-- left navbar items -->
+			<ul class="nav navbar-nav">
+				<!-- for each left navbar item, set active class for active one, set dropdown class if item has children -->
+				<li *ngFor="#item of settings.routeStructure| NavbarFilter:'left'" [ngClass]="{active: router.isRouteActive(router.generate([item.name])), dropdown: item.children}">
+					<!-- if not a dropdown, display the navbar item normally -->
+					<a *ngIf="!item.children" [routerLink]="[item.name]">{{item.description}}</a>
+
+					<!-- if dropdown, no redirection on click -->
+					<a *ngIf="item.children" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{item.description}}<span class="caret"></span></a>
+					<!-- if dropdown, displaydropdown menu  -->
+					<ul *ngIf="item.children" class="dropdown-menu">
+						<!-- first item of dropdown menu is the initial link of the dropdown item -->
+						<li [ngClass]="{active: router.isRouteActive(router.generate([item.name]))}">
+							<a [routerLink]="[item.name]">{{item.description}}</a>
+						</li>
+						<!-- for each children, display a dropdown menu item -->
+						<li *ngFor="#child_item of item.children" [ngClass]="{active: router.isRouteActive(router.generate([child_item.name]))}">
+							<a [routerLink]="[child_item.name]">{{child_item.description}}</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+			<!-- right navbar items -->
+			<ul class="nav navbar-nav navbar-right">
+				<!-- for each right navbar item, set active class for active one, set dropdown class if item has children -->
+				<li *ngFor="#item of settings.routeStructure| NavbarFilter:'right'" [ngClass]="{active: router.isRouteActive(router.generate([item.name])), dropdown: item.children}">
+					<!-- if not a dropdown, display the navbar item normally -->
+					<a *ngIf="!item.children" [routerLink]="[item.name]">{{item.description}}</a>
+
+					<!-- if dropdown, no redirection on click -->
+					<a *ngIf="item.children" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{item.description}}<span class="caret"></span></a>
+					<!-- if dropdown, displaydropdown menu  -->
+					<ul *ngIf="item.children" class="dropdown-menu">
+						<!-- first item of dropdown menu is the initial link of the dropdown item -->
+						<li [ngClass]="{active: router.isRouteActive(router.generate([item.name]))}">
+							<a [routerLink]="[item.name]">{{item.description}}</a>
+						</li>
+						<!-- for each children, display a dropdown menu item -->
+						<li *ngFor="#child_item of item.children" [ngClass]="{active: router.isRouteActive(router.generate([child_item.name]))}">
+							<a [routerLink]="[child_item.name]">{{child_item.description}}</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div><!-- /.container-fluid -->
 </nav>
 
 
