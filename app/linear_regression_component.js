@@ -3,10 +3,9 @@
 
 	
 	function make_graph(element_id, x_data, y_data, curve_parameters, curve_function, width, height){
-		width = width || 500;
-		height = height || 250;
-		var innerWidth = width -60;
-		var innerHeight = height -40;
+
+		var minWidth = 300;
+		var minHeight = 200;
 
 		var x_data0 = x_data.map(function(d,i){return d[0];});
 		var data = x_data.map(function(d,i){
@@ -14,15 +13,47 @@
 		})
 
 
-		d3.select("#"+element_id).node().innerHTML="";
 
-		var chart = d3.select("#"+element_id)
+
+		var chart = d3.select("#"+element_id);
+		chart.html("");
+
+		function getMaxWidth(el){
+			var parentStyle = window.getComputedStyle(el.parentNode);
+			return parseInt(parentStyle.width) - parseInt(parentStyle.borderWidth)*2 - parseInt(parentStyle.paddingLeft) - parseInt(parentStyle.paddingRight);
+		}
+
+		// if width is undefined
+		var maxWidth = getMaxWidth(chart.node());
+		if( !width || width > maxWidth )
+			width = maxWidth;
+		if( !height )
+			height = width;
+		
+
+		// set minimums if sizes are too small
+		if( width < minWidth )
+			width = minWidth;
+		if( height < minHeight )
+			height = minHeight;
+
+		var padding={
+			top:15+height*0.01,
+			bottom: 15+height*0.01,
+			left: 35+width*0.01,
+			right: 15+width*0.01
+		}
+
+		var innerWidth = width -padding.right - padding.left;
+		var innerHeight = height -padding.left - padding.right;
+
+		chart
 			.attr("width", width)
 			.attr("height", height);
 
 
 		var mainContainer = chart.append("g")
-			.attr("transform","translate(30,20)");
+			.attr("transform","translate("+ padding.left+","+padding.top+")");
 
 
 		var x = d3.scale.linear()
@@ -107,7 +138,7 @@
 
 			this.update = function(){
 				console.log(_this.theta = linear_regression.run(_this.data, _this.y,_this.options));
-				make_graph("linear-regression-graph", _this.data, _this.y, _this.theta, linear_regression.hypothesis);
+				make_graph("linear-regression-graph", _this.data, _this.y, _this.theta, linear_regression.hypothesis, 300,300);
 			}
 			this.addRow = function(){
 				_this.data.push(new Array(_this.dimensions[1]).fill(0));
