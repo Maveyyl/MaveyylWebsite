@@ -30,8 +30,20 @@
 			this.theta = [];
 
 			this.update = function(){
+				_this.options.alpha = parseFloat(_this.options.alpha);
+				_this.options.stop_condition = parseFloat(_this.options.stop_condition);
+				_this.options.max_iter = parseInt(_this.options.max_iter);
+
 				_this.result = linear_regression.run(_this.data, _this.y,_this.options);
-				graph_utils.generic_2D_graph("linear-regression-graph", _this.data, _this.y, _this.result.theta, linear_regression.hypothesis, 300,300);
+				console.log(_this.result);
+
+				graph_utils.polynomial_regression_graph("linear-regression-graph", _this.data, _this.y, _this.result.theta, linear_regression.hypothesis);
+
+
+				var iterX = [];
+				for(var i=1;i<=_this.result.iter_count;i++)
+					iterX.push(i);
+				graph_utils.generic_2D_graph("cost-graph", iterX, _this.result.J);
 			}
 			this.addRow = function(){
 				_this.data.push(new Array(_this.dimensions[1]).fill(0));
