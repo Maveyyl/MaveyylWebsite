@@ -6,7 +6,10 @@ Website delivered by NodeJS using express http server.
 Client framework will be Angular2, by consequence the website will be a single page webapp.
 
 ## TODO
+* display graph of J for linear regression
+* implement feature scalling and normalization for linear regression
 * Linear regression page needs some explanation text and decent layout
+* Refactor linear regression to be polynomial regression
 * Bug with x inputs for linear regression page: can only tip one character and then focus on the input is lost
 * Children views' template file are currently on the same level, refactor to have them under a folder. Refactor views' name that have children views.
 * Refactor views template name to include "view" at the end so that we have room to name the content component and templates
