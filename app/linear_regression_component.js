@@ -33,11 +33,17 @@
 				_this.options.alpha = parseFloat(_this.options.alpha);
 				_this.options.stop_condition = parseFloat(_this.options.stop_condition);
 				_this.options.max_iter = parseInt(_this.options.max_iter);
+				for(var i=0;i<_this.data.length;i++){
+					_this.y[i] = parseFloat(_this.y[i]);
+					for( var y =0;y<_this.data[i].length;y++){
+						_this.data[i][y] = parseFloat(_this.data[i][y]);
+					}
+				}
 
 				_this.result = linear_regression.run(_this.data, _this.y,_this.options);
 				console.log(_this.result);
 
-				graph_utils.polynomial_regression_graph("linear-regression-graph", _this.data, _this.y, _this.result.theta, linear_regression.hypothesis);
+				graph_utils.polynomial_regression_graph("linear-regression-graph", _this.result.X_norm, _this.y, _this.result.theta, linear_regression.hypothesis);
 
 
 				var iterX = [];
