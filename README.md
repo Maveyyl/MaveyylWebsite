@@ -7,7 +7,6 @@ Client framework will be Angular2, by consequence the website will be a single p
 
 ## TODO
 * refactor: stop using array's iterator functions and start using conventional loops because they are more performant.
-* implement time measuring total and per iterations
 * Refactor graph_utils so that the specific graph uses the generic graph to avoid code duplication.
 * implement feature scalling and normalization for linear regression
 * Linear regression page needs some explanation text and decent layout
