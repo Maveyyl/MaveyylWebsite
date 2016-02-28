@@ -16,12 +16,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="#item of data; #i = index">
-						<td *ngFor="#item2 of item; #j = index">
-							<input type="text" [(ngModel)]="data[i][j]">
+					<tr *ngFor="#row of data; #i = index">
+						<td *ngFor="#cell of row; #j = index">
+							<input type="text" [(ngModel)]="data[i][j]" style="width:50px;">
 						</td>
 						<td >
-							<input type="text" [(ngModel)]="y[i]">
+							<input type="text" [(ngModel)]="y[i]" style="width:50px;">
 						</td>
 					</tr>
 				</tbody>
