@@ -6,29 +6,29 @@
 			name: "Home",
 			description: "Home",
 			path: "/home",
-			templateUrl: "templates/home.html",
+			templateUrl: "templates/home_view.html",
 			navbarPosition: "left",
 			useAsDefault: true
 		},
 		{
-			name: "GodotHome",
-			description: "Godot Home",
-			path: "/godot_home",
-			templateUrl: "templates/godot_home.html",
+			name: "Godot",
+			description: "Godot",
+			path: "/godot",
+			templateUrl: "templates/godot_view.html",
 			navbarPosition: "left"
 		},
 		{
-			name: "MachineLearningHome",
-			description: "Machine Learning Home",
+			name: "MachineLearning",
+			description: "Machine Learning",
 			path: "/machine_learning_home",
-			templateUrl: "templates/machine_learning_home.html",
+			templateUrl: "templates/machine_learning_view.html",
 			navbarPosition: "left",
 			children: [
 				{
 					name: "PolynomialRegression",
 					description: "Polynomial Regression",
 					path: "/polynomial_regression",
-					templateUrl: "templates/polynomial_regression.html",
+					templateUrl: "templates/polynomial_regression_view.html",
 					directives: [app.polynomialRegressionComponent]
 				}
 			]
@@ -37,7 +37,7 @@
 			name: "Links",
 			description: "Links",
 			path: "/links",
-			templateUrl: "templates/links.html",
+			templateUrl: "templates/links_view.html",
 			navbarPosition: "right"
 		}
 	];
@@ -116,7 +116,7 @@
 	app.mainComponent = ng.router.RouteConfig(routeConfig)(app.mainComponent);
 	app.mainComponent = ng.core.Component({
 		selector: 'maveyyl-website-app',
-		templateUrl: 'templates/main.html',
+		templateUrl: 'templates/main_view.html',
 		directives: [ng.router.ROUTER_DIRECTIVES],
 		pipes: [app.NavbarFilter]
 	})(app.mainComponent);
