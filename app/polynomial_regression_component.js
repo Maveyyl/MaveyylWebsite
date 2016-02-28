@@ -9,7 +9,7 @@
 
 	app.polynomialRegressionComponent = ng.core.Component({
 		selector: 'polynomial-regression',
-		templateUrl: 'templates/polynomial_regression.html'
+		templateUrl: 'templates/machine_learning/polynomial_regression.html'
 	}).
 	Class({
 		constructor:function(){

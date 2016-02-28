@@ -14,21 +14,21 @@
 			name: "Godot",
 			description: "Godot",
 			path: "/godot",
-			templateUrl: "templates/godot_view.html",
+			templateUrl: "templates/godot/godot_view.html",
 			navbarPosition: "left"
 		},
 		{
 			name: "MachineLearning",
 			description: "Machine Learning",
 			path: "/machine_learning_home",
-			templateUrl: "templates/machine_learning_view.html",
+			templateUrl: "templates/machine_learning/machine_learning_view.html",
 			navbarPosition: "left",
 			children: [
 				{
 					name: "PolynomialRegression",
 					description: "Polynomial Regression",
 					path: "/polynomial_regression",
-					templateUrl: "templates/polynomial_regression_view.html",
+					templateUrl: "templates/machine_learning/polynomial_regression_view.html",
 					directives: [app.polynomialRegressionComponent]
 				}
 			]
