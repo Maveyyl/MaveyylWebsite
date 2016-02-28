@@ -7,7 +7,6 @@ Client framework will be Angular2, by consequence the website will be a single p
 
 ## TODO
 * Refactor graph_utils so that the specific graph uses the generic graph to avoid code duplication.
-* Add option to activate or not feature scalling
 * Linear regression page needs some explanation text and decent layout
 * Refactor linear regression to be polynomial regression
 * Bug with x inputs for linear regression page: can only tip one character and then focus on the input is lost

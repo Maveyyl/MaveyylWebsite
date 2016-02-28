@@ -20,7 +20,8 @@
 			this.options = {
 				alpha: 0.1,
 				stop_condition: 0.001,
-				max_iter:1000
+				max_iter:1000,
+				feature_scalling:true
 			};
 			_this.dimensions = [5,1];
 			this.data = [
@@ -30,6 +31,7 @@
 			this.theta = [];
 
 			this.update = function(){
+				// parse inputs into numbers
 				_this.options.alpha = parseFloat(_this.options.alpha);
 				_this.options.stop_condition = parseFloat(_this.options.stop_condition);
 				_this.options.max_iter = parseInt(_this.options.max_iter);
@@ -40,15 +42,18 @@
 					}
 				}
 
+				// compute the linear regression
 				_this.result = linear_regression.run(_this.data, _this.y,_this.options);
 				console.log(_this.result);
 
+				// print data dots and result curve
 				graph_utils.polynomial_regression_graph("linear-regression-graph", _this.result.X_norm, _this.y, _this.result.theta, linear_regression.hypothesis);
 
-
+				// create cost function x axis values
 				var iterX = [];
 				for(var i=1;i<=_this.result.iter_count;i++)
 					iterX.push(i);
+				// print cost function dots
 				graph_utils.generic_2D_graph("cost-graph", iterX, _this.result.J);
 			}
 			this.addRow = function(){
