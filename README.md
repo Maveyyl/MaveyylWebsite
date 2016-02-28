@@ -6,7 +6,6 @@ Website delivered by NodeJS using express http server.
 Client framework will be Angular2, by consequence the website will be a single page webapp.
 
 ## TODO
-* refactor: stop using array's iterator functions and start using conventional loops because they are more performant.
 * Refactor graph_utils so that the specific graph uses the generic graph to avoid code duplication.
 * Add option to activate or not feature scalling
 * Linear regression page needs some explanation text and decent layout
