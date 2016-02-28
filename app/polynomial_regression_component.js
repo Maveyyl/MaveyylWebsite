@@ -4,16 +4,16 @@
 
 
 	function update(){
-		linear_regression.run( data, y, options);
+		polynomial_regression.run( data, y, options);
 	}
 
-	app.LinearRegressionComponent = ng.core.Component({
-		selector: 'linear-regression',
-		templateUrl: 'templates/linear_regression_specific.html'
+	app.polynomialRegressionComponent = ng.core.Component({
+		selector: 'polynomial-regression',
+		templateUrl: 'templates/polynomial_regression_specific.html'
 	}).
 	Class({
 		constructor:function(){
-			console.log("linear_regression_component");
+			console.log("polynomial_regression_component");
 		},
 		ngOnInit: function(){
 			var _this = this;
@@ -42,12 +42,12 @@
 					}
 				}
 
-				// compute the linear regression
-				_this.result = linear_regression.run(_this.data, _this.y,_this.options);
+				// compute the polynomial regression
+				_this.result = polynomial_regression.run(_this.data, _this.y,_this.options);
 				console.log(_this.result);
 
 				// print data dots and result curve
-				graph_utils.polynomial_regression_graph("linear-regression-graph", _this.result.X_norm, _this.y, _this.result.theta, linear_regression.hypothesis);
+				graph_utils.polynomial_regression_graph("polynomial-regression-graph", _this.result.X_norm, _this.y, _this.result.theta, polynomial_regression.hypothesis);
 
 				// create cost function x axis values
 				var iterX = [];

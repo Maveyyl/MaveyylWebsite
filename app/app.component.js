@@ -25,11 +25,11 @@
 			navbarPosition: "left",
 			children: [
 				{
-					name: "LinearRegression",
-					description: "Linear Regression",
-					path: "/linear_regression",
-					templateUrl: "templates/linear_regression.html",
-					directives: [app.LinearRegressionComponent]
+					name: "PolynomialRegression",
+					description: "Polynomial Regression",
+					path: "/polynomial_regression",
+					templateUrl: "templates/polynomial_regression.html",
+					directives: [app.polynomialRegressionComponent]
 				}
 			]
 		},
