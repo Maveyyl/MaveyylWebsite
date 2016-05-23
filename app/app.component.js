@@ -3,41 +3,42 @@
 	app.settings = {};
 	app.settings.routeStructure = [
 		{
-			name: "Home",
+			name: "HomePage",
 			description: "Home",
 			path: "/home",
-			templateUrl: "templates/home_view.html",
+			templateUrl: "templates/home_page.html",
 			navbarPosition: "left",
-			useAsDefault: true
+			useAsDefault: true,
+			directives: [ app.components.homeTest ]
 		},
 		{
-			name: "Godot",
+			name: "GodotPage",
 			description: "Godot",
 			path: "/godot",
-			templateUrl: "templates/godot/godot_view.html",
+			templateUrl: "templates/godot/godot_page.html",
 			navbarPosition: "left"
 		},
 		{
-			name: "MachineLearning",
+			name: "MachineLearningPage",
 			description: "Machine Learning",
 			path: "/machine_learning_home",
-			templateUrl: "templates/machine_learning/machine_learning_view.html",
+			templateUrl: "templates/machine_learning/machine_learning_page.html",
 			navbarPosition: "left",
-			children: [
-				{
-					name: "PolynomialRegression",
-					description: "Polynomial Regression",
-					path: "/polynomial_regression",
-					templateUrl: "templates/machine_learning/polynomial_regression_view.html",
-					directives: [app.polynomialRegressionComponent]
-				}
-			]
+			// children: [
+			// 	{
+			// 		name: "PolynomialRegressionPage",
+			// 		description: "Polynomial Regression",
+			// 		path: "/polynomial_regression",
+			// 		templateUrl: "templates/machine_learning/polynomial_regression_page.html",
+			// 		directives: [app.components.polynomialRegression]
+			// 	}
+			// ]
 		},
 		{
-			name: "Links",
+			name: "LinksPage",
 			description: "Links",
 			path: "/links",
-			templateUrl: "templates/links_view.html",
+			templateUrl: "templates/links_page.html",
 			navbarPosition: "right"
 		}
 	];
@@ -62,7 +63,7 @@
 	// function creating component and routeConfig for a view
 	function create_view(app, routeConfig, view_info){
 		// create component for a view
-		app[view_info.name+"ViewComponent"] = ng.core.Component({
+		app.components[view_info.name] = ng.core.Component({
 			templateUrl: view_info.templateUrl,
 			directives: view_info.directives
 		})
@@ -77,16 +78,16 @@
 		// create route config for the view
 		routeConfig.push({
 			path: view_info.path,
-			component: app[view_info.name+"ViewComponent"],
+			component: app.components[view_info.name],
 			name: view_info.name,
 			useAsDefault: view_info.useAsDefault || false
 		});
 	}
 
 
-
 	// Pipe filter used to separate left navbar items and right navbar items
-	app.NavbarFilter = ng.core.Pipe({
+	app.pipes = app.pipes || {};
+	app.pipes.NavbarFilter = ng.core.Pipe({
 		name: "NavbarFilter"
 	}).
 	Class({
@@ -96,13 +97,13 @@
 				// default is left
 				if( !e.navbarPosition )
 					e.navbarPosition = "left";
-				return e.navbarPosition === args[0];
+				return e.navbarPosition === args;
 			});
 		}
 	});
 
 	// main component
-	app.mainComponent = ng.core.Class({
+	app.components.mainComponent = ng.core.Class({
 		// inject router object in main component constructor
 		constructor: [ng.router.Router, function(router){
 			console.log("main");
@@ -113,14 +114,14 @@
 			this.settings = app.settings;
 		}
 	});
-	app.mainComponent = ng.router.RouteConfig(routeConfig)(app.mainComponent);
-	app.mainComponent = ng.core.Component({
+	app.components.mainComponent = ng.router.RouteConfig(routeConfig)(app.components.mainComponent);
+	app.components.mainComponent = ng.core.Component({
 		selector: 'maveyyl-website-app',
-		templateUrl: 'templates/main_view.html',
+		templateUrl: 'templates/main_page.html',
 		directives: [ng.router.ROUTER_DIRECTIVES],
-		pipes: [app.NavbarFilter]
-	})(app.mainComponent);
+		pipes: [app.pipes.NavbarFilter]
+	})(app.components.mainComponent);
 
 
 
-})(window.app || (window.app = {}));
+})(window.app || ( window.app = { components:{} } ));

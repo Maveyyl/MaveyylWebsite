@@ -17,7 +17,7 @@
 			<!-- left navbar items -->
 			<ul class="nav navbar-nav">
 				<!-- for each left navbar item, set active class for active one, set dropdown class if item has children -->
-				<li *ngFor="#item of settings.routeStructure| NavbarFilter:'left'" [ngClass]="{active: router.isRouteActive(router.generate([item.name])), dropdown: item.children}">
+				<li *ngFor="let item of settings.routeStructure | NavbarFilter:'left'" [ngClass]="{active: router.isRouteActive(router.generate([item.name])), dropdown: item.children}">
 					<!-- if not a dropdown, display the navbar item normally -->
 					<a *ngIf="!item.children" [routerLink]="[item.name]">{{item.description}}</a>
 
@@ -30,7 +30,7 @@
 							<a [routerLink]="[item.name]">{{item.description}}</a>
 						</li>
 						<!-- for each children, display a dropdown menu item -->
-						<li *ngFor="#child_item of item.children" [ngClass]="{active: router.isRouteActive(router.generate([child_item.name]))}">
+						<li *ngFor="let child_item of item.children" [ngClass]="{active: router.isRouteActive(router.generate([child_item.name]))}">
 							<a [routerLink]="[child_item.name]">{{child_item.description}}</a>
 						</li>
 					</ul>
@@ -40,7 +40,7 @@
 			<!-- right navbar items -->
 			<ul class="nav navbar-nav navbar-right">
 				<!-- for each right navbar item, set active class for active one, set dropdown class if item has children -->
-				<li *ngFor="#item of settings.routeStructure| NavbarFilter:'right'" [ngClass]="{active: router.isRouteActive(router.generate([item.name])), dropdown: item.children}">
+				<li *ngFor="let item of settings.routeStructure | NavbarFilter:'right'" [ngClass]="{active: router.isRouteActive(router.generate([item.name])), dropdown: item.children}">
 					<!-- if not a dropdown, display the navbar item normally -->
 					<a *ngIf="!item.children" [routerLink]="[item.name]">{{item.description}}</a>
 
@@ -53,7 +53,7 @@
 							<a [routerLink]="[item.name]">{{item.description}}</a>
 						</li>
 						<!-- for each children, display a dropdown menu item -->
-						<li *ngFor="#child_item of item.children" [ngClass]="{active: router.isRouteActive(router.generate([child_item.name]))}">
+						<li *ngFor="let child_item of item.children" [ngClass]="{active: router.isRouteActive(router.generate([child_item.name]))}">
 							<a [routerLink]="[child_item.name]">{{child_item.description}}</a>
 						</li>
 					</ul>
