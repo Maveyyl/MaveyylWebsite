@@ -6,10 +6,11 @@
 	})
 	.Class({
 		constructor: function(router){
-			console.log("homeTest");
+			if( app.settings.verbose )
+				console.log("HomeTest");
 		},
 		ngOnInit: function(){
-			app.graph_utils.generic_2D_graph("graph", [0,1,2], [0,1,2],200,200);
+			app.graph_utils.generic_2D_graph("graph", [0,1,2], [0,1,2], 400,300);
 		}
 	});
 

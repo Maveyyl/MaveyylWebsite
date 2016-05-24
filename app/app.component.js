@@ -1,6 +1,8 @@
 (function(app) {
 
-	app.settings = {};
+	app.settings = {
+		verbose : true
+	};
 	app.settings.routeStructure = [
 		{
 			name: "HomePage",
@@ -70,7 +72,8 @@
 		.Class({
 			constructor:(function(a){ 
 				return function(){
-					console.log(a.name);
+					if( app.settings.verbose )
+						console.log(a.name);
 				} 
 			})(view_info) 
 		});

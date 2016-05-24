@@ -4,7 +4,113 @@
 		generic_2D_graph: generic_2D_graph
 	};
 
-	function generic_2D_graph(element_id, x_data, y_data, width, height){
+	function generic_2D_graph(element_id, x, curves, width, height){
+		// x looks like [0,1,2,....]
+
+		// select id and empty it
+		var chart = d3.select("#"+element_id);
+		chart.html("");
+
+		// handling displayed dimensions
+		var dimensions = handleDimensions(chart.node(), width, height);
+		width = dimensions.width;
+		height = dimensions.height;
+
+		// handling logical dimensions
+		var fixedWidth = 400;
+		var fixedHeight = 300;
+
+		var padding={
+			top: fixedHeight/10,
+			bottom: fixedHeight/10,
+			left: fixedWidth/10,
+			right: fixedWidth/10
+		}
+
+		var innerWidth = fixedWidth - padding.right - padding.left;
+		var innerHeight = fixedHeight -padding.left - padding.right;
+
+		// Fonts
+		var xAxisFont = "1.2em sans-serif";
+
+		// Axises
+		var xAxisTicks = 5;
+
+		// set real dimensions and viewbox dimensions
+		chart
+			.attr("width", width)
+			.attr("height", height)
+			.attr("viewBox", "0 0 "+ fixedWidth +" "+ fixedHeight) ;
+
+		// main container of the graph
+		var mainContainer = chart.append("g")
+			.attr("transform","translate("+ padding.left+","+padding.top+")");
+
+
+		var style = document.createElement("style");
+		document.head.appendChild(style);
+		var sheet = style.sheet;
+
+		sheet.insertRule("\
+			svg .x-axis text { \
+				fill: black;\
+				font: "+ xAxisFont +"\
+			}\
+		",0);
+
+		sheet.insertRule("\
+			svg .x-axis line, svg .x-axis path {\
+				fill: none,\
+				stroke: black,\
+			}\
+		",1);
+		console.log(sheet);
+
+
+		// x scale
+		var xScale = d3.scale.linear()
+			.domain( d3.extent(x) )
+			.range( [0, innerWidth] );
+		// x axis
+		var xAxis = d3.svg.axis()
+			.scale(xScale)
+			.orient("bottom")
+			.ticks(xAxisTicks);
+		// putting the axis in the container
+		mainContainer.append("g")
+			.attr("class", "x-axis")
+			// .attr("fill", "none")
+			// .attr("stroke", "black")
+			.attr("transform", "translate(0," + (innerHeight) + ")")
+			.call(xAxis);
+
+
+	}
+
+	function handleDimensions(el, width, height, minWidth, minHeight){
+		// if no dimensions given, take the maximum
+		width = width || getElementMaxWidth(el) ;
+		height = height || getElementMaxHeight(el);
+
+		// if min dimensions given, make sure the minimums are respected
+		if( minWidth && width < minWidth )
+			width = minWidth;
+		if( minHeight && width < minHeight )
+			height = minHeight;
+
+		return { width: width, height: height };
+	}
+	function getElementMaxWidth(el){
+		var parentStyle = window.getComputedStyle(el.parentNode);
+		
+		return parseInt(parentStyle.width) - parseInt(parentStyle.borderWidth)*2 - parseInt(parentStyle.paddingLeft) - parseInt(parentStyle.paddingRight);
+	}
+	function getElementMaxHeight(el){
+		var parentStyle = window.getComputedStyle(el.parentNode);
+		return parseInt(parentStyle.height) - parseInt(parentStyle.borderWidth)*2 - parseInt(parentStyle.paddingTop) - parseInt(parentStyle.paddingBottom);
+	}
+
+	function generic_2D_graph2(element_id, x_data, y_data, width, height){
 
 		var minWidth = 300;
 		var minHeight = 200;
