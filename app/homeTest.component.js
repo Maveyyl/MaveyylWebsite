@@ -8,9 +8,17 @@
 		constructor: function(router){
 			if( app.settings.verbose )
 				console.log("HomeTest");
+
+			
 		},
 		ngOnInit: function(){
-			// app.graph_utils.generic_2D_graph("graph", [0,1,2], [0,1,2], 600,300);
+			Promise.all([
+				SystemJS.import('app/graphUtils.js'),
+				SystemJS.import('lib/d3/3.5.16/d3.min.js'),				
+			]).then(function(modules) {
+				app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
+			});
+			// app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
 			// var _this = this;
 			// this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'phazer-game-test', { preload: preload, create: create });
 
