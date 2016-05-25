@@ -26,15 +26,15 @@
 			path: "/machine_learning_home",
 			templateUrl: "templates/machine_learning/machine_learning_page.html",
 			navbarPosition: "left",
-			// children: [
-			// 	{
-			// 		name: "PolynomialRegressionPage",
-			// 		description: "Polynomial Regression",
-			// 		path: "/polynomial_regression",
-			// 		templateUrl: "templates/machine_learning/polynomial_regression_page.html",
-			// 		directives: [app.components.polynomialRegression]
-			// 	}
-			// ]
+			children: [
+				{
+					name: "QLearningExperimentsPage",
+					description: "Q Learning Experiments",
+					path: "/q_learning_experiments",
+					templateUrl: "templates/machine_learning/q_learning_experiments_page.html",
+					directives: [app.components.qLearningExperiment1]
+				}
+			]
 		},
 		{
 			name: "LinksPage",
