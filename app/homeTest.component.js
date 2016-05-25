@@ -10,7 +10,7 @@
 				console.log("HomeTest");
 		},
 		ngOnInit: function(){
-			app.graph_utils.generic_2D_graph("graph", [0,1,2], [0,1,2], 400,300);
+			app.graph_utils.generic_2D_graph("graph", [0,1,2], [0,1,2], 600,300);
 		}
 	});
 

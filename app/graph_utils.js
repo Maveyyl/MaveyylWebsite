@@ -4,8 +4,10 @@
 		generic_2D_graph: generic_2D_graph
 	};
 
-	function generic_2D_graph(element_id, x, curves, width, height){
-		// x looks like [0,1,2,....]
+	function generic_2D_graph(element_id, x, y, width, height){
+		var data = x.map(function(d,i){
+			return [x[i], y[i]];
+		});
 
 		// select id and empty it
 		var chart = d3.select("#"+element_id);
@@ -17,8 +19,9 @@
 		height = dimensions.height;
 
 		// handling logical dimensions
-		var fixedWidth = 400;
+		var ratio = width/height;
 		var fixedHeight = 300;
+		var fixedWidth = fixedHeight * ratio;
 
 		var padding={
 			top: fixedHeight/10,
@@ -32,9 +35,11 @@
 
 		// Fonts
 		var xAxisFont = "1.2em sans-serif";
+		var yAxisFont = "1.2em sans-serif";
 
-		// Axises
-		var xAxisTicks = 5;
+		// Axises parameters
+		var xAxisTicks = 5 * Math.round(fixedWidth/400);
+		var yAxisTicks = 5;
 
 		// set real dimensions and viewbox dimensions
 		chart
@@ -47,6 +52,7 @@
 			.attr("transform","translate("+ padding.left+","+padding.top+")");
 
 
+		// CSS
 		var style = document.createElement("style");
 		document.head.appendChild(style);
 		var sheet = style.sheet;
@@ -54,16 +60,28 @@
 		sheet.insertRule("\
 			svg .x-axis text { \
 				fill: black;\
-				font: "+ xAxisFont +"\
+				font: "+ xAxisFont +";\
 			}\
-		",0);
+		", 0);		
+		sheet.insertRule("\
+			svg .y-axis text { \
+				fill: black;\
+				font: "+ yAxisFont +";\
+			}\
+		", 0);
 
 		sheet.insertRule("\
 			svg .x-axis line, svg .x-axis path {\
-				fill: none,\
-				stroke: black,\
+				fill: none;\
+				stroke: black;\
 			}\
-		",1);
+		", 0);
+		sheet.insertRule("\
+			svg .y-axis line, svg .y-axis path {\
+				fill: none;\
+				stroke: black;\
+			}\
+		", 0);
 		console.log(sheet);
 
 
@@ -79,11 +97,32 @@
 		// putting the axis in the container
 		mainContainer.append("g")
 			.attr("class", "x-axis")
-			// .attr("fill", "none")
-			// .attr("stroke", "black")
 			.attr("transform", "translate(0," + (innerHeight) + ")")
 			.call(xAxis);
 
+
+		// y scale
+		var yScale = d3.scale.linear()
+			.domain( d3.extent(y).reverse() )
+			.range([0, innerHeight]);
+		// y axis
+		var yAxis = d3.svg.axis()
+			.scale(yScale)
+			.orient("left")
+			.ticks(yAxisTicks);;
+		// putting the axis in the container
+		mainContainer.append("g")
+			.attr("class", "y-axis")
+			.attr("transform", "translate(0,0)")
+			.call(yAxis);
+
+		mainContainer.selectAll(".dot")
+			.data(data)
+		.enter().append("circle")
+			.attr("class", "graph-dot")
+			.attr("cx", function(d) { return xScale(d[0]); })
+			.attr("cy", function(d) { return yScale(d[1]); })
+			.attr("r", 5);
 
 	}
 
