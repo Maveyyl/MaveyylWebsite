@@ -22,13 +22,3 @@ Food.prototype.update = function(explore, verbose){
 			this.dead = false;
 	}	
 };
-
-Food.prototype.render = function(){
-	return constants.entities_render[ this.type ];
-};
-
-Food.prototype.copy = function(world, tile){
-	var plant =  new Food(world, tile);
-
-	return plant;
-};

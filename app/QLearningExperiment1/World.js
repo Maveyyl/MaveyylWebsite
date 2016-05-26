@@ -9,14 +9,13 @@ module.exports = World;
 /*************************************************************************
  * World
  ************************************************************************/
-function World(copy){
+function World(){
 	this.map = [];
 	this.map_size = constants.map_size;
 	this.plant_count = constants.plant_count;
 	this.creature = undefined;
 
 
-	if( copy ) return;
 
 	// instanciating the map	
 	this.map = new Array(this.map_size);
@@ -49,24 +48,6 @@ function World(copy){
 
 	}
 }
-World.prototype.copy = function(){
-	var world = new World(true);
-	world.map = new Array(world.map_size);	
-
-	for(var y=0;y<world.map_size;y++){
-		world.map[y] = new Array(world.map_size);
-		for(var x=0;x<world.map_size;x++){
-			world.map[y][x]= this.map[y][x].copy(world, [x,y]);
-
-			if( world.map[y][x].entity_type === constants.entities.creature )
-				world.creature = world.map[y][x].entity;
-		}
-	}
-	world.plant_spawned = this.plant_spawned;
-
-	return world;
-};
-
 
 World.prototype.update = function(explore, verbose){
 	for(var y=0;y<this.map_size;y++){
@@ -77,27 +58,4 @@ World.prototype.update = function(explore, verbose){
 		}
 	}
 	this.creature.update(explore,verbose);
-};
-World.prototype.render = function(){
-	console.log("Map:");
-
-	var row_str ;
-	row_str = "___";
-	for( var c=0;c<this.map_size;c++)
-		row_str += "__";
-	console.log(row_str);
-	console.log("");
-	row_str = "";
-	for(var r=0;r<this.map_size;r++){
-		row_str = "| ";
-		for( var c=0;c<this.map_size;c++){
-			row_str += this.map[r][c].render() + " ";
-		}
-		row_str += "|";
-		console.log(row_str);
-	}
-	row_str = "___";
-	for( var c=0;c<this.map_size;c++)
-		row_str += "__";
-	console.log(row_str);
 };

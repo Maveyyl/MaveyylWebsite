@@ -6,7 +6,7 @@ module.exports = Creature;
 /*************************************************************************
  * Creature
  ************************************************************************/
- function Creature(world, tile, copy){
+ function Creature(world, tile){
 	this.world = world;
 	this.tile = tile;
 	this.type = constants.entities.creature;
@@ -21,7 +21,6 @@ module.exports = Creature;
 	this.epsilon = constants.epsilon_max;
 	this.random = true;
 
-	if( copy ) return;
 
 	this.sensors = new Array(constants.sensors.count).fill(0);
 
@@ -36,15 +35,7 @@ module.exports = Creature;
 	this.nn = ml.linear_neural_network( [[]], [], theta, config);
 	
 }
-Creature.prototype.copy = function(world, tile){
-	var creature = new Creature(world, tile, true);
-	creature.nn = this.nn;
-	creature.sensors = this.sensors.slice();
-	return creature;
-};
-Creature.prototype.render = function(){
-	return constants.entities_render[ this.type ];
-};
+
 
 /*
  * get_updated_sensors

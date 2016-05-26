@@ -35,19 +35,3 @@ Plant.prototype.update = function(explore, verbose){
 			this.dead = false;
 	}	
 };
-
-Plant.prototype.render = function(){
-	if( !this.dead )
-		return constants.entities_render[ this.type ];
-	else
-		return constants.entities_render[ constants.entities.dead_plant ];
-};
-
-Plant.prototype.copy = function(world, tile){
-	var plant =  new Plant(world,tile);
-
-	plant.dead = this.dead;
-	plant.recover = this.recover;
-
-	return plant;
-};

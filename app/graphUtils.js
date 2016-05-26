@@ -4,7 +4,7 @@
 		generic2DGraph: generic2DGraph
 	};
 
-	function generic2DGraph(element_id, x, y, width, height){
+	function generic2DGraph(element_id, x, y, height, width){
 		var data = x.map(function(d,i){
 			return [x[i], y[i]];
 		});
@@ -31,7 +31,7 @@
 		}
 
 		var innerWidth = fixedWidth - padding.right - padding.left;
-		var innerHeight = fixedHeight -padding.left - padding.right;
+		var innerHeight = fixedHeight -padding.top - padding.bottom;
 
 		// Fonts
 		var xAxisFont = "1.2em sans-serif";
@@ -121,7 +121,7 @@
 			.attr("class", "graph-dot")
 			.attr("cx", function(d) { return xScale(d[0]); })
 			.attr("cy", function(d) { return yScale(d[1]); })
-			.attr("r", 5);
+			.attr("r", 2);
 
 	}
 

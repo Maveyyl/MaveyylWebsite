@@ -16,21 +16,6 @@ Tile.prototype.update = function(explore, verbose){
 	if( this.entity && this.entity.update )
 		this.entity.update(explore,verbose);
 };
-Tile.prototype.render = function(){
-	if( this.entity_type === constants.entities.none )
-		return constants.entities_render[ this.entity_type ];
-	else
-		return this.entity.render();
-};
-Tile.prototype.copy = function(world, pos){
-	var tile =  new Tile(world,pos);
-
-	tile.entity_type = this.entity_type;
-	if( tile.entity_type !== constants.entities.none )
-		tile.entity = this.entity.copy(world, tile);
-
-	return tile;
-};
 Tile.prototype.set_entity = function( entity ){
 	this.entity = entity;
 	this.entity_type = entity.type;

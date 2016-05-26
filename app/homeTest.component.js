@@ -18,6 +18,7 @@
 			]).then(function(modules) {
 				app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
 			});
+			
 			// app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
 			// var _this = this;
 			// this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'phazer-game-test', { preload: preload, create: create });
