@@ -4,17 +4,18 @@
 		generic2DGraph: generic2DGraph
 	};
 
+
 	function generic2DGraph(element_id, x, y, height, width){
 		var data = x.map(function(d,i){
 			return [x[i], y[i]];
 		});
 
 		// select id and empty it
-		var chart = d3.select("#"+element_id);
-		chart.html("");
+		var graph = d3.select("#"+element_id);
+		graph.html("");
 
 		// handling displayed dimensions
-		var dimensions = handleDimensions(chart.node(), width, height);
+		var dimensions = handleDimensions(graph.node(), width, height);
 		width = dimensions.width;
 		height = dimensions.height;
 
@@ -42,13 +43,13 @@
 		var yAxisTicks = 5;
 
 		// set real dimensions and viewbox dimensions
-		chart
+		graph
 			.attr("width", width)
 			.attr("height", height)
 			.attr("viewBox", "0 0 "+ fixedWidth +" "+ fixedHeight) ;
 
 		// main container of the graph
-		var mainContainer = chart.append("g")
+		var mainContainer = graph.append("g")
 			.attr("transform","translate("+ padding.left+","+padding.top+")");
 
 
@@ -94,7 +95,7 @@
 			.orient("bottom")
 			.ticks(xAxisTicks);
 		// putting the axis in the container
-		mainContainer.append("g")
+		var xAxisContainer = mainContainer.append("g")
 			.attr("class", "x-axis")
 			.attr("transform", "translate(0," + (innerHeight) + ")")
 			.call(xAxis);
@@ -110,12 +111,13 @@
 			.orient("left")
 			.ticks(yAxisTicks);;
 		// putting the axis in the container
-		mainContainer.append("g")
+		var yAxisContainer = mainContainer.append("g")
 			.attr("class", "y-axis")
 			.attr("transform", "translate(0,0)")
 			.call(yAxis);
 
-		mainContainer.selectAll(".dot")
+
+		mainContainer.selectAll(".graph-dot")
 			.data(data)
 		.enter().append("circle")
 			.attr("class", "graph-dot")
@@ -123,6 +125,37 @@
 			.attr("cy", function(d) { return yScale(d[1]); })
 			.attr("r", 2);
 
+
+		graph.update = function(x, y){		
+			var data = x.map(function(d,i){
+				return [x[i], y[i]];
+			});
+
+			xScale.domain( d3.extent(x) );		
+			xAxis.scale(xScale);
+			xAxisContainer.call(xAxis);
+
+			yScale.domain( d3.extent(y).reverse() );
+			yAxisContainer.call(yAxis);
+
+			var selector = mainContainer.selectAll(".graph-dot").data(data);
+			selector
+				.attr("cx", function(d) { return xScale(d[0]); })
+				.attr("cy", function(d) { return yScale(d[1]); })
+				.attr("r", 2);
+
+			// console.log(selector);
+			selector.enter().append("circle")
+				.attr("class", "graph-dot")
+				.attr("cx", function(d) { return xScale(d[0]); })
+				.attr("cy", function(d) { return yScale(d[1]); })
+				.attr("r", 2);
+
+			selector.exit().remove();
+		};
+
+
+		return graph;
 	}
 
 	function handleDimensions(el, width, height, minWidth, minHeight){
