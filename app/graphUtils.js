@@ -4,6 +4,43 @@
 		generic2DGraph: generic2DGraph
 	};
 
+	function neuralNetworkGraph(element_id, structure, weights, height, width){
+
+		// select id and empty it
+		var graph = d3.select("#"+element_id);
+		graph.html("");		
+
+		// handling displayed dimensions
+		var dimensions = handleDimensions(graph.node(), width, height);
+		width = dimensions.width;
+		height = dimensions.height;
+
+		// handling logical dimensions
+		var ratio = width/height;
+		var fixedHeight = 300;
+		var fixedWidth = fixedHeight * ratio;
+
+		var padding={
+			top: fixedHeight/10,
+			bottom: fixedHeight/10,
+			left: fixedWidth/10,
+			right: fixedWidth/10
+		}
+
+		var innerWidth = fixedWidth - padding.right - padding.left;
+		var innerHeight = fixedHeight -padding.top - padding.bottom;
+
+		// set real dimensions and viewbox dimensions
+		graph
+			.attr("width", width)
+			.attr("height", height)
+			.attr("viewBox", "0 0 "+ fixedWidth +" "+ fixedHeight) ;
+
+		// main container of the graph
+		var mainContainer = graph.append("g")
+			.attr("transform","translate("+ padding.left+","+padding.top+")");
+	}
+
 
 	function generic2DGraph(element_id, x, y, height, width){
 		var data = x.map(function(d,i){

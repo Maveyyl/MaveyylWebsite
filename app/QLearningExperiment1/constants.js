@@ -97,9 +97,9 @@ constants.sensors_distance_detection_value= 25;
  * Neural Network
  */
 constants.network = [ constants.sensors.count, 15, constants.actions.count ];
-constants.learning_rate = 0.0001;
+constants.learning_rate = 0.00001;
 constants.regularization_parameter = 0.01;
-constants.discount_factor = 0.7;
+constants.discount_factor = 0.6;
 
 constants.theta_init_upper_range = 1;
 constants.theta_init_lower_range = -1;
