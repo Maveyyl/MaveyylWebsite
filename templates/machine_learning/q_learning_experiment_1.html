@@ -1,6 +1,6 @@
 <h3>Experiment 1</h3>
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-md-3">
 		{{updates_per_second}} updates per second
 		<br>
 		<button (click)="speed_divided_by_2()">speed / 2</button>
@@ -11,7 +11,7 @@
 
 		<div [hidden]="!render" id="experiment-1-phaser"></div>
 	</div>
-	<div class="col-md-4">
+	<div class="col-md-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Average Error, should decrease until reaching stability</h3>
@@ -21,18 +21,27 @@
 			</div>
 		</div>
 
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Average time spent exploring instead of exploiting, should decrease to 0.1</h3>
+			</div>
+			<div class="panel-body">
+				<svg id="agv-behavior"></svg>
+			</div>
+		</div>
 
+	</div>
+
+	<div class="col-md-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Average amount of time food was nearby, should stay around 0.15</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-near_food"></svg>
+				<svg id="agv-near-food"></svg>
 			</div>
 		</div>
-	</div>
-
-	<div class="col-md-4">
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Average amount of time food was eaten when nearby, should increase up to 0.9</h3>
@@ -41,13 +50,24 @@
 				<svg id="agv-eat"></svg>
 			</div>
 		</div>
-
+	</div>
+	
+	<div class="col-md-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Average time spent exploring instead of exploiting, should decrease to 0.1</h3>
+				<h3 class="panel-title">Average amount of time plant was nearby</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-behavior"></svg>
+				<svg id="agv-near-plant"></svg>
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Average amount of time plant was hit when nearby, should increase up to 0.9</h3>
+			</div>
+			<div class="panel-body">
+				<svg id="agv-hit"></svg>
 			</div>
 		</div>
 	</div>

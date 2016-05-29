@@ -16,10 +16,19 @@ module.exports = Creature;
 
 	this.just_ate = false;
 	this.near_food = false;
+	this.just_hit = false;
+	this.near_plant = false;
 	this.last_meal = 0;
 
 	this.epsilon = constants.epsilon_max;
 	this.random = true;
+	
+	this.experience_replay = constants.experience_replay;
+	if( this.experience_replay ){
+		this.experiences = [];
+		this.experience_pool_size = constants.experience_pool_size;
+		this.experience_replay_count = constants.experience_replay_count;
+	}
 
 
 	this.sensors = new Array(constants.sensors.count).fill(0);
@@ -180,8 +189,9 @@ Creature.prototype.apply_action = function(action){
 		// if hit action
 		if( action === constants.actions.hit ){
 			for(var direction= 0;direction<constants.directions.count;direction++){
-				if( neighbour_tiles[direction].entity_type === constants.entities.plant ){
+				if( neighbour_tiles[direction].entity_type === constants.entities.plant && !neighbour_tiles[direction].entity.dead ){
 					neighbour_tiles[direction].entity.get_hit();
+					this.just_hit = true;
 				}
 			}
 		}
@@ -207,11 +217,15 @@ Creature.prototype.update = function( verbose){
 
 	this.just_ate = false;
 	this.near_food = false;
+	this.just_hit = false;
+	this.near_plant = false;
 
 	// update sensors
 	this.sensors = this.get_updated_sensors(this.tile);
 	if( Math.max(...this.sensors.slice(8,12)) > 0  )
 		this.near_food = true;
+	if( Math.max(...this.sensors.slice(0,4)) > 0  )
+		this.near_plant = true;
 	
 
 	// predict reward for all possible actions
@@ -235,18 +249,69 @@ Creature.prototype.update = function( verbose){
 	// applying choosen action
 	this.apply_action(action_choice);
 
-	// update reward with futur possible reward
+	// computes next sensor state state
+	var next_sensors = this.get_updated_sensors(this.tile);
+	
+	// if experience replay is activated
+	if( this.experience_replay ){
+		// memorizes experience
+		this.experiences.push( {
+			state: this.sensors.slice(),
+			action: action_choice,
+			reward: reward,
+			next_state: next_sensors.slice()
+		});
+		// removes oldest experience if experience pool is limited and limit is reached
+		if( this.experience_pool_size !== -1 && this.experiences.length > this.experience_pool_size ){
+			this.experiences.shift();
+		}
+	}
+		
+	// update reward with future possible reward
 	if( !this.just_ate ){
-		var next_sensors = this.get_updated_sensors(this.tile);
 		var next_predictions = this.get_predictions(next_sensors);
 		reward = reward + constants.discount_factor * Math.max(...next_predictions);
 	}
 
 
-	// learn
 	var rewards = predictions.slice();
 	rewards[action_choice] = reward;
-	this.nn.online_gradient_descent ( this.sensors, rewards );
+	
+	// learn directly if experience replay isn't activated
+	if( !this.experience_replay ){
+		this.nn.online_gradient_descent ( this.sensors, rewards );
+	}
+	
+	// if experience replay is activated learn the current experience and some previous experience at the same time
+	if( this.experience_replay ){
+		var X = [];
+		var y = [];
+		X.push(this.sensors.slice());
+		X[0].unshift(1);
+		y.push(rewards);
+	
+		// repeat according to experience_replay count
+		for(var i=0;i<this.experience_replay_count;i++){
+			// pick randomly an old experience from the experience pool
+			var experience = this.experiences[  Math.floor( Math.random() * this.experiences.length ) ];
+			
+			// update reward with future possible reward
+			var replay_reward = experience.reward;
+			var replay_prediction = this.get_predictions( experience.state );
+			var replay_next_prediction = this.get_predictions( experience.next_state );
+			replay_reward += constants.discount_factor * Math.max(...replay_prediction);
+			
+			// learn
+			var replay_rewards = replay_prediction.slice();
+			replay_rewards[experience.action] = replay_reward;
+			// this.nn.online_gradient_descent ( experience.state, replay_rewards );
+			X.push( experience.state.slice() );
+			X[i+1].unshift(1);
+			y.push(replay_rewards);
+		}
+
+		this.nn.gradient_step( X, y);
+	}
 
 
 	if(verbose){

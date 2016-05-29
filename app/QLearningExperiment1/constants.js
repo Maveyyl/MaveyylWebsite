@@ -8,14 +8,14 @@ constants.map_size = 15;
 constants.plant_count = 30;
 constants.plant_recover_steps = 50;
 constants.food_decay = false;
-constants.food_decay_steps = 5;
+constants.food_decay_steps = 20;
 
 
 /*
  * Rewards
  */
 constants.rewards = {
-	neutral: 20,
+	neutral: 0,
 	no_move: 0,
 	forbidden_action: 0,
 	eat: 100
@@ -99,10 +99,14 @@ constants.sensors_distance_detection_value= 25;
 constants.network = [ constants.sensors.count, 15, constants.actions.count ];
 constants.learning_rate = 0.00001;
 constants.regularization_parameter = 0.01;
-constants.discount_factor = 0.6;
+constants.discount_factor = 0.7;
 
 constants.theta_init_upper_range = 1;
 constants.theta_init_lower_range = -1;
+
+constants.experience_replay = false;
+constants.experience_pool_size = 50000;
+constants.experience_replay_count = 200;
 
 
 constants.epsilon_max = 1;

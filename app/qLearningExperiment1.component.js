@@ -91,29 +91,35 @@
 
 					// var used to compute averages of stat graphes
 					_this.cumul_error = 0;
+					_this.cumul_behavior = 0;
 					_this.cumul_near_food = 0;
 					_this.cumul_eat = 0;
-					_this.cumul_behavior = 0;
+					_this.cumul_near_plant = 0;
+					_this.cumul_hit = 0;
 
 					// raw data that we will provide to our graphes
 					_this.avg_error = [];
+					_this.avg_behavior = [];
 					_this.avg_near_food = [];
 					_this.avg_eat = [];
-					_this.avg_behavior = [];
+					_this.avg_near_plant= [];
+					_this.avg_hit = [];
 
 					_this.iterations = [];
 
 
 					// create graphes to display our stats
-					_this.avg_error_graph = app.graphUtils.generic2DGraph("agv-error", _this.iterations,  _this.avg_error, 200);
-					_this.avg_near_food_graph = app.graphUtils.generic2DGraph("agv-near_food", _this.iterations,  _this.avg_near_food, 200);
-					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 200);
-					_this.avg_behavior_graph = app.graphUtils.generic2DGraph("agv-behavior", _this.iterations,  _this.avg_behavior, 200);
+					_this.avg_error_graph = app.graphUtils.generic2DGraph("agv-error", _this.iterations,  _this.avg_error, 150);
+					_this.avg_behavior_graph = app.graphUtils.generic2DGraph("agv-behavior", _this.iterations,  _this.avg_behavior, 150);
+					_this.avg_near_food_graph = app.graphUtils.generic2DGraph("agv-near-food", _this.iterations,  _this.avg_near_food, 150);
+					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
+					_this.avg_near_plant_graph = app.graphUtils.generic2DGraph("agv-near-plant", _this.iterations,  _this.avg_near_plant, 150);
+					_this.avg_hit_graph = app.graphUtils.generic2DGraph("agv-hit", _this.iterations,  _this.avg_hit, 150);
 
+					window.creature = _this.world.creature;
 				}
 
 				function update(e){
-
 
 					// computes how much simulation update must be done during this phaser update
 					// according to elapsed time since last simulation update
@@ -129,22 +135,28 @@
 
 							// compute new stats and add them to data
 							_this.avg_error.push( _this.cumul_error / _this.stats_update );
+							_this.avg_behavior.push( _this.cumul_behavior / _this.stats_update );
 							_this.avg_near_food.push( _this.cumul_near_food / _this.stats_update );
 							_this.avg_eat.push( _this.cumul_eat / (_this.cumul_near_food+1) );
-							_this.avg_behavior.push( _this.cumul_behavior / _this.stats_update );
+							_this.avg_near_plant.push( _this.cumul_near_plant / _this.stats_update );
+							_this.avg_hit.push( _this.cumul_hit / (_this.cumul_near_plant+1) );
 							_this.iterations.push( _this.world.creature.nn.iter_count );
 
 							// update the graphes displaying the stats
 							_this.avg_error_graph.update( _this.iterations,  _this.avg_error);
+							_this.avg_behavior_graph.update( _this.iterations,  _this.avg_behavior);
 							_this.avg_near_food_graph.update( _this.iterations,  _this.avg_near_food);
 							_this.avg_eat_graph.update( _this.iterations,  _this.avg_eat);
-							_this.avg_behavior_graph.update( _this.iterations,  _this.avg_behavior);
+							_this.avg_near_plant_graph.update( _this.iterations,  _this.avg_near_plant);
+							_this.avg_hit_graph.update( _this.iterations,  _this.avg_hit);
 
 							// reset the cumulatives in order to compute the next cycle of averages
 							_this.cumul_error = 0;
+							_this.cumul_behavior = 0;
 							_this.cumul_near_food = 0;
 							_this.cumul_eat = 0;
-							_this.cumul_behavior = 0;
+							_this.cumul_near_plant = 0;
+							_this.cumul_hit = 0;
 
 
 							// if there's more than 200 dots to display per graph
@@ -152,9 +164,11 @@
 							if( _this.iterations.length === _this.max_graph_dots ){
 
 								_this.avg_error = data_couple_average( _this.avg_error );
+								_this.avg_behavior = data_couple_average( _this.avg_behavior );
 								_this.avg_near_food = data_couple_average( _this.avg_near_food );
 								_this.avg_eat = data_couple_average( _this.avg_eat );
-								_this.avg_behavior = data_couple_average( _this.avg_behavior );
+								_this.avg_near_plant = data_couple_average( _this.avg_near_plant );
+								_this.avg_hit = data_couple_average( _this.avg_hit );
 								_this.iterations = data_couple_average( _this.iterations );
 
 								// increase by 2 the number of update cycle before computing stats
@@ -167,9 +181,11 @@
 
 						_this.world.update();
 						_this.cumul_error += _this.world.creature.nn.J[ _this.world.creature.nn.J.length -1];
+						_this.cumul_behavior += _this.world.creature.random;
 						_this.cumul_near_food += _this.world.creature.near_food;
 						_this.cumul_eat += _this.world.creature.just_ate;
-						_this.cumul_behavior += _this.world.creature.random;
+						_this.cumul_near_plant += _this.world.creature.near_plant;
+						_this.cumul_hit += _this.world.creature.just_hit;
 					}
 
 					// update the rendering
