@@ -31,7 +31,7 @@
 					name: "QLearningExperimentsPage",
 					description: "Q Learning Experiments",
 					path: "/q_learning_experiments",
-					templateUrl: "templates/machine_learning/q_learning_experiments_page.html",
+					templateUrl: "templates/machine_learning/q_learning_experiment_1_page.html",
 					directives: [app.components.qLearningExperiment1]
 				}
 			]
