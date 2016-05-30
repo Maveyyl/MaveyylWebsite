@@ -1,19 +1,22 @@
 <h3>Experiment 1</h3>
 <div class="row">
-	<div class="col-md-3">
-		{{updates_per_second}} updates per second
-		<br>
-		<button (click)="speed_divided_by_2()">speed / 2</button>
-		<button (click)="speed_times_2()">speed x 2</button>
-		<br>
-		<input type="checkbox" [(ngModel)]="render"> Toggle rendering
-		<br>
+<div class="col-md-3">
+	{{updates_per_second}} updates per second
+	<br>
+	<button (click)="speed_divided_by_2()">speed / 2</button>
+	<button (click)="speed_times_2()">speed x 2</button>
+	<br>
+	<input type="checkbox" [(ngModel)]="render"> Toggle rendering
+	<br>
 
-		<div [hidden]="!render" id="experiment-1-phaser"></div>
+	<div [hidden]="!render" id="experiment-1-phaser"></div>
 
-		<svg id="nn-graph"></svg>
-	</div>
-	<div class="col-md-3">
+	<svg id="nn-graph"></svg>
+</div>
+
+<div class="col-md-9">
+	<div class="row">
+	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">G1: Average Error, should decrease until reaching stability</h3>
@@ -34,7 +37,7 @@
 
 	</div>
 
-	<div class="col-md-3">
+	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">G3: Average amount of time food was nearby, should stay around 0.15</h3>
@@ -54,7 +57,7 @@
 		</div>
 	</div>
 	
-	<div class="col-md-3">
+	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">G5: Average amount of time plant was nearby</h3>
@@ -73,4 +76,128 @@
 			</div>
 		</div>
 	</div>
+	</div>
+
+	<div class="row">
+	<div class="col-md-9">
+		<br>
+		<small> The following is an attempt to explain everything. There is a LOT of text, english is not my mother tongue and the subject is really difficult.</small>
+		<br>
+		<br>
+		<h4>What am is displayed?</h4>
+		<p>
+			This is a simulation an Artificial Intelligence living in a simple world where it can sense its environment and act on it.<br>
+			<br>
+			On the left are two buttons and one checkbox, click on the checkbox to see the rendering of the simulation.<br>
+			Under the rendering is the representation of the neural network of the AI.<br>
+			Center and left are graphes showing what decisions are taken by the AI on the average.<br>
+		<p>
+		<br>
+
+
+
+
+		<h4>Rules of the simulation</h4>
+		<p>
+			The AI is called the "creature" <img src="/img/creature.png">. It lives in a 2 dimensional tiled world where time is turn based.<br>
+			It is able to move from tile to tile in 4 different directions: left, top, right and bottom, and can see the objects that are in the adjacent tiles: nothing <img src="/img/grass.png">, plant <img src="/img/plant.png">, dead plant <img src="/img/dead_plant.png">, or food <img src="/img/food.png">. Plants are randomly spawned in the world at the beginning.<br>
+			The ultimate goal of the creature is to eat the food. For that, the creature has two actions: hit and eat. Hit will transform the surrounding plants into dead plants and food will appear next to the dead plant, a dead plant will need 50 turns to become a live plant again. Eat will consume the surrounding food. The creature can also choose to do nothing.<br>
+			<br>
+			To summary the creature has 7 possible actions: move left, move top, move right, move bottom, do nothing, hit, eat. Some actions in certain circumstances will do nothing, such as eating while no food is around, or moving to a tile that has already an object on it.<br>
+			The creature has 12 sensors: plant presence in the 4 directions, dead plant presence in the 4 directions, food presence in the 4 directions.<br>
+			Every action that is chosen, the creature will be given a reward value: 20 by default, 0 for doing nothing and 100 per food eaten.<br>
+		</p>
+		<br>
+
+
+		<h4>How can we interact with the simulation?</h4>
+		<ul>
+			<li>Click on "Toggle rendering" checkbox to see/hide the simulation in real time.</li>
+			<li>Click on "speed / 2" or "speed * 2" to increase or decrease by 2 the simulation's updates done per second.</li>
+			<li>Admire or not.</li>
+			<li>Watch the representation of the Neural Network of the AI, red for negative links, blue for positive links, wider link has more impact on the decision making.</li>
+			<li>Watch nice graphs because data is beautiful. They won't hurt the performance of your browser in long runs.</li>
+		</ul>
+		<br>
+
+		<h4>How does it work?</h4>
+		<p>
+			In short, that is Q learning with Neural Network. See the Links page of this website for good links on matter.<br>
+			<br>
+			The creature will take decisions thanks to its artificial Neural Network (NN). The NN is designed to take in input the value of the creature's sensors, and will output one value par possible action that represents the potential immediate or future reward for applying the given action.<br>
+			<br>
+			At first this NN isn't trained and doesn't know how to take good decisions toward the surrounding environment. It'll explore the environment by applying random actions. A reward will be given for that action and the creature will tweak its NN into outputting that reward for the action taken for the state it was in. That works just like when we learn, we estimate something we don't know, we confront it with reality, and learn.<br>
+			<br>
+			Now you're supposed to wonder how it can possibly learn that hitting a plant can possibly lead to eating. That is because of the way we compute the reward. We first compute the base reward considering the state of the creature, the action and the environment, the creature apply the action and changes state, it then predicts the potential reward for all possible actions, select the action that leads to the best reward and adds a part of this reward to the previously computed reward.<br>
+			reward = base reward + discount factor * best next reward <br>
+			For example, if our discount factor is 0.6, if the creature is moving next to a food piece, it'll have a base reward of 20, added to it 0.6 * 100 because the best next action is eating the food piece, which gives 100 as reward. Right here it only gives insight of potential reward 1 turn forward, but with repetition the potential reward added here 0.6 * 100 will be discounted and added to previous steps, which will give insight of potential rewards many turns forward.<br>
+			<br>
+			The creature will gradually reduce the amount of time it's taking random decisions and will start choosing decisions according to the best potential reward. At some point it'll take its own decisions 90% of the time, it's important to keep 10% of random decisions to ensure that the creature doesn't get stuck and continue explores.<br>
+		</p>
+		<br>
+
+		<h4>Expected results</h4>
+		<p>
+			It is expected that the creature slowly learns to find plants, hit them, turns around the dead plant to find food, eat food...<br>
+		</p>
+		<br>
+
+		<h4>Results</h4>
+		<p>
+			The creature consistently learns what reaction an action will have on a given state, and so it'll avoid actions that lead to nothing. It'll learn to eat food when food is nearby. But it won't necessarily learn to hit a plant when a plant is nearby, nor turning around the dead plant to find the food.<br>
+			On most runs, the creature will simply wander in the world, hit most of the plants it'll encounter, turn right or left of the plant to find one food, and go elsewhere.<br>
+			There can be cycles and path that will emerge, where the creature will eat 15% to 25% of the turns, which isn't bad considering that it takes 3 turns to eat when a plant is nearby.<br>
+			<br>
+			Why what we expected doesn't emerge?<br>
+			My best guess is that learning efficiently that hitting trees and turning around it will lead to eating is difficult with so little perception of the environment and without memory. The creature learns that moving next to a dead plant can lead to food, but it cannot really learn that after eating food it must move forward around the dead plant, because it doesn't know what it has done the previous turn, and since it sees nothing in it's sensors, it will choose a random direction.<br>
+			Expressing that more generally: The intermediate states before reaching goal states aren't different than other common states, the only way to make the difference is by knowing the previous states.<br>
+			<br>
+			The creature reaches this result consistently, sometimes it fails and never actually learns to hit plants. It often reaches a good result around 20 000 turn and optimize it with long runs (I've made some runs go up to 100 millions turns).<br>
+			<br>
+			The fails are partly due to random disposal of the plants, random initialization of the neural network (problem of local optima), random action choosing very frequent in the first 20 000 turns and influencing the way the NN learns. Some times it also starts wrong and with some more time ends up in the good configuration anyway.
+		</p>
+		<br>
+
+		<h4>What have been tried</h4>
+		<p>
+			Tweak of the neural network's architecture<br>
+			I've been trying to change the NN's architecture, the minimalist NN I can have is 12x7, the current is 12x15x7, I can use longer or wider architectures but 12x15x7 was the one that gave the best results.<br>
+			<br>
+			Tweak of the meta parameters<br>
+			There are tree meta parameters: the learning rate (how fast the creature learns), the discount factor (how much precedence is relevant in the reward computation) and the regularization parameter (not going to explain this one). The current set up is 0.0001, 0.7 and 0 and other set up haven't performed as well as this one.<br>
+			<br>
+			Tweak of the revive time of the dead plants<br>
+			The time required for dead plant to recover can be shortened or elongated, resulting in more or less frequent food encounter.<br>
+			<br>
+			Food decay<br>
+			I have implemented food decay to force the creature into exploiting as much as possible fallen food from a plant, but the creature wouldn't learn to eat enough.<br>
+			<br>
+			Memory replay<br>
+			I have implemented memory replay, the creature memorize it's X last states, actions, rewards and next states and relearn from a Y sized selection of this memory every turn. It's supposed to help, but it did the contrary for our set up. I suspect it to be again because of the lack of immediate memory.<br>
+			<br>
+		</p>
+		<br>
+
+		<h4>What could be done</h4>
+		<p>
+			Recurrent neural network<br>
+			What I used was the simplest implementation of Neural Network, there are different kind. Recurrent neural networks' neurons have looping links that allows internal states and so allows temporal behavior. They could help in our simulation because the intermediate states to reach the goal state are only dissociable from other common states only thanks to their previous states.<br>
+			<br>
+			A better designed simulation<br>
+			A simulation with less sequentiality and more sensors. Also better sensors, having to handle different actions and sensors for all 4 directions is probably a overwhelming approach.<br>
+			<br>
+		</p>
+		<br>
+
+		<h4>What was used to do this</h4>
+		<ul>
+			<li>Feedforward Neural Network with Backpropagation algorithm, implemented in JS</li>
+			<li>Q learning algorithm adapted to Neural Network</li>
+			<li>Phaser for the rendering of the simulation</li>
+			<li>D3JS for the graphes and neural network representation</li>
+		</ul>
+
+	</div>
+	</div>
+</div>
 </div>
