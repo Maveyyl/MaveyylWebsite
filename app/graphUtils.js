@@ -1,7 +1,8 @@
 (function(app) {
 
 	app.graphUtils = {
-		generic2DGraph: generic2DGraph
+		generic2DGraph: generic2DGraph,
+		neuralNetworkGraph: neuralNetworkGraph
 	};
 
 	function neuralNetworkGraph(element_id, structure, weights, height, width){
@@ -21,10 +22,10 @@
 		var fixedWidth = fixedHeight * ratio;
 
 		var padding={
-			top: fixedHeight/10,
-			bottom: fixedHeight/10,
-			left: fixedWidth/10,
-			right: fixedWidth/10
+			top: 0,
+			bottom: 0,
+			left: 10,
+			right: 10
 		}
 
 		var innerWidth = fixedWidth - padding.right - padding.left;
@@ -39,6 +40,127 @@
 		// main container of the graph
 		var mainContainer = graph.append("g")
 			.attr("transform","translate("+ padding.left+","+padding.top+")");
+
+
+		var layerCount = structure.length;
+		var structureCopy = new Array(layerCount);
+		for(var l=0;l<layerCount-1;l++)
+			structureCopy[l] = structure[l] + 1; // adding bias unit
+		structureCopy[layerCount-1] = structure[layerCount-1];
+		structure = structureCopy;
+
+		var unitSize = 3;
+		var linkMaxSize = 3;
+
+		var unitData = [];
+		for(var l=0;l<layerCount;l++){
+			for(var u=0;u<structure[l];u++){
+				unitData.push(
+					{
+						id: u,
+						layer: l
+					}
+				);
+			}
+		}
+		var linkData = [];
+		var linkIndex = 0;
+		for(var l=0;l<layerCount-1;l++){
+			for(var u=0;u<structure[l];u++){
+				for(var nu=0;nu<structure[l+1];nu++){
+					if( l+1 !== layerCount -1 && nu ===0)
+						continue;
+					linkData.push(
+						{
+							id: linkIndex,
+							layerStart: l,
+							layerStop: l+1,
+							unitStart: u,
+							unitStop: nu,
+							weight: weights[linkIndex]
+						}
+					);
+					linkIndex++;
+				}
+			}
+		}
+		graph.linkData = linkData;
+
+
+		// x scale for layers
+		var xScale = d3.scale.linear()
+			.domain( [0, layerCount-1] )
+			.range( [0, innerWidth] );
+
+		var yScales = new Array(layerCount);
+		for(var l=0;l<layerCount;l++){
+			yScales[l] = d3.scale.linear()
+				.domain( [0, structure[l] +1 ] )
+				.range( [0, innerHeight]);
+		}
+
+		var linkSizeScale = d3.scale.linear()
+			.domain( [ 0,  d3.max( [Math.abs(d3.min(weights)), d3.max(weights) ] ) ] )
+			.range( [0, linkMaxSize ]);
+
+
+		mainContainer.selectAll(".graph-line")
+			.data(linkData)
+		.enter().append("line")
+			.attr("class", "graph-line")
+			.attr("x1", function(d){ return xScale(d.layerStart); })
+			.attr("y1", function(d){ return yScales[d.layerStart](d.unitStart+1); })
+			.attr("x2", function(d){ return xScale(d.layerStop); })
+			.attr("y2", function(d){ return yScales[d.layerStop](d.unitStop+1); })
+			.style("stroke", function(d){ return d.weight > 0 ? "blue":"red"; } )
+			.style("stroke-width",  function(d){ return linkSizeScale(Math.abs(d.weight)); } );
+
+
+		mainContainer.selectAll(".graph-dot")
+			.data(unitData)
+		.enter().append("circle")
+			.attr("class", "graph-dot")
+			.attr("cx", function(d) { return xScale( d.layer ); })
+			.attr("cy", function(d) { return yScales[d.layer](d.id+1); })
+			.attr("r", unitSize);
+
+
+		graph.update = function(weights){		
+
+			for(var w=0;w<weights.length;w++){
+				this.linkData[w].weight = weights[w];
+			}
+
+
+			var linkSizeScale = d3.scale.linear()
+			.domain( [ 0,  d3.max( [Math.abs(d3.min(weights)), d3.max(weights) ] ) ] )
+			.range( [0, linkMaxSize ]);
+
+
+			var selector = mainContainer.selectAll(".graph-line").data(this.linkData);
+			selector
+				.attr("class", "graph-line")
+				.attr("x1", function(d){ return xScale(d.layerStart); })
+				.attr("y1", function(d){ return yScales[d.layerStart](d.unitStart+1); })
+				.attr("x2", function(d){ return xScale(d.layerStop); })
+				.attr("y2", function(d){ return yScales[d.layerStop](d.unitStop+1); })
+				.style("stroke", function(d){ return d.weight > 0 ? "blue":"red"; } )
+				.style("stroke-width",  function(d){ return linkSizeScale(Math.abs(d.weight)); } );
+
+			// // console.log(selector);
+			// selector.enter().append("graph-line")
+			// 	.attr("class", "graph-line")
+			// 	.attr("x1", function(d){ return xScale(d.layerStart); })
+			// 	.attr("y1", function(d){ return yScales[d.layerStart](d.unitStart+1); })
+			// 	.attr("x2", function(d){ return xScale(d.layerStop); })
+			// 	.attr("y2", function(d){ return yScales[d.layerStop](d.unitStop+1); })
+			// 	.style("stroke", function(d){ return d.weight > 0 ? "blue":"red"; } )
+			// 	.style("stroke-width",  function(d){ return linkSizeScale(Math.abs(d.weight)); } );
+
+			// selector.exit().remove();
+		};
+
+		return graph;
 	}
 
 

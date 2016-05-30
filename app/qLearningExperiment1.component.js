@@ -85,7 +85,7 @@
 					// this is to keep track of the elapsed time since last simulation updates
 					_this.elapsed_time_cumul = 0;
 					// how often we want to compute stats and update graphes per simulation updates
-					_this.stats_update = _this.updates_per_second;
+					_this.stats_update = _this.updates_per_second * 100;
 					// maximum number of dot to be displayed on graphes
 					_this.max_graph_dots = 200;
 
@@ -115,6 +115,8 @@
 					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
 					_this.avg_near_plant_graph = app.graphUtils.generic2DGraph("agv-near-plant", _this.iterations,  _this.avg_near_plant, 150);
 					_this.avg_hit_graph = app.graphUtils.generic2DGraph("agv-hit", _this.iterations,  _this.avg_hit, 150);
+
+					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 500);
 
 					window.creature = _this.world.creature;
 				}
@@ -149,6 +151,8 @@
 							_this.avg_eat_graph.update( _this.iterations,  _this.avg_eat);
 							_this.avg_near_plant_graph.update( _this.iterations,  _this.avg_near_plant);
 							_this.avg_hit_graph.update( _this.iterations,  _this.avg_hit);
+							// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 700);
+							_this.nn_graph.update( _this.world.creature.nn.theta);
 
 							// reset the cumulatives in order to compute the next cycle of averages
 							_this.cumul_error = 0;

@@ -16,7 +16,19 @@
 				SystemJS.import('app/graphUtils.js'),
 				SystemJS.import('lib/d3/3.5.16/d3.min.js'),				
 			]).then(function(modules) {
-				app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
+				// app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
+				app.graphUtils.neuralNetworkGraph("nngraph",
+					[3,2,1,1],
+					[
+						1,-2,3,-4,
+						5,-6,7,-8,
+
+						9,-10,11,
+
+						-12,13,
+					],
+					300,
+					300);
 			});
 			
 			// app.graphUtils.generic2DGraph("graph", [0,1,2], [0,1,2], 600,300);
