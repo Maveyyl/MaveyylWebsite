@@ -15,7 +15,7 @@ constants.food_decay_steps = 20;
  * Rewards
  */
 constants.rewards = {
-	neutral: 15,
+	neutral: 20,
 	no_move: 0,
 	forbidden_action: 0,
 	eat: 100
@@ -98,7 +98,7 @@ constants.sensors_distance_detection_value= 100;
  */
 constants.network = [ constants.sensors.count, 15, constants.actions.count ];
 constants.learning_rate = 0.00001;
-constants.regularization_parameter = 0.01;
+constants.regularization_parameter = 0;
 constants.discount_factor = 0.7;
 
 constants.theta_init_upper_range = 1;

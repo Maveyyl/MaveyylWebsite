@@ -65,11 +65,20 @@
 		}
 		var linkData = [];
 		var linkIndex = 0;
+		// for every layer -1
 		for(var l=0;l<layerCount-1;l++){
-			for(var u=0;u<structure[l];u++){
-				for(var nu=0;nu<structure[l+1];nu++){
-					if( l+1 !== layerCount -1 && nu ===0)
-						continue;
+			// for every units in the next layer, minus the bias unit
+			for(var nu=0;nu<structure[l+1];nu++){
+				if( l+1 !== layerCount -1 && nu ===0)
+					continue;
+				// compute scale function of links coming to nu unit
+				var previous_units = weights.slice(linkIndex, linkIndex+structure[l]);
+				var scale = d3.scale.linear()
+					.domain( [ 0,  d3.max( [Math.abs(d3.min(previous_units)), d3.max(previous_units) ] ) ] )
+					.range( [0, linkMaxSize ])
+
+				// for every units in the previous layer
+				for(var u=0;u<structure[l];u++){
 					linkData.push(
 						{
 							id: linkIndex,
@@ -77,7 +86,8 @@
 							layerStop: l+1,
 							unitStart: u,
 							unitStop: nu,
-							weight: weights[linkIndex]
+							weight: weights[linkIndex],
+							scale: scale
 						}
 					);
 					linkIndex++;
@@ -85,6 +95,8 @@
 			}
 		}
 		graph.linkData = linkData;
+		graph.layerCount = layerCount;
+		graph.structure = structure;
 
 
 		// x scale for layers
@@ -99,9 +111,9 @@
 				.range( [0, innerHeight]);
 		}
 
-		var linkSizeScale = d3.scale.linear()
-			.domain( [ 0,  d3.max( [Math.abs(d3.min(weights)), d3.max(weights) ] ) ] )
-			.range( [0, linkMaxSize ]);
+		// var linkSizeScale = d3.scale.linear()
+		// 	.domain( [ 0,  d3.max( [Math.abs(d3.min(weights)), d3.max(weights) ] ) ] )
+		// 	.range( [0, linkMaxSize ]);
 
 
 		mainContainer.selectAll(".graph-line")
@@ -113,7 +125,7 @@
 			.attr("x2", function(d){ return xScale(d.layerStop); })
 			.attr("y2", function(d){ return yScales[d.layerStop](d.unitStop+1); })
 			.style("stroke", function(d){ return d.weight > 0 ? "blue":"red"; } )
-			.style("stroke-width",  function(d){ return linkSizeScale(Math.abs(d.weight)); } );
+			.style("stroke-width",  function(d){ return d.scale(Math.abs(d.weight)); } );
 
 
 		mainContainer.selectAll(".graph-dot")
@@ -126,6 +138,29 @@
 
 
 		graph.update = function(weights){		
+
+			// for every layer -1
+			var linkIndex = 0;
+			for(var l=0;l< this.layerCount-1;l++){
+				// for every units in the next layer, minus the bias unit
+				for(var nu=0;nu<this.structure[l+1];nu++){
+					if( l+1 !== this.layerCount -1 && nu ===0)
+						continue;
+					// compute scale function of links coming to nu unit
+					var previous_units = weights.slice(linkIndex, linkIndex+this.structure[l]);
+					var scale = d3.scale.linear()
+						.domain( [ 0,  d3.max( [Math.abs(d3.min(previous_units)), d3.max(previous_units) ] ) ] )
+						.range( [0, linkMaxSize ])
+
+					// for every units in the previous layer
+					for(var u=0;u<this.structure[l];u++){
+						this.linkData[linkIndex].weight = weights[linkIndex];
+						this.linkData[linkIndex].scale = scale;
+
+						linkIndex++;
+					}
+				}
+			}
 
 			for(var w=0;w<weights.length;w++){
 				this.linkData[w].weight = weights[w];
@@ -145,7 +180,7 @@
 				.attr("x2", function(d){ return xScale(d.layerStop); })
 				.attr("y2", function(d){ return yScales[d.layerStop](d.unitStop+1); })
 				.style("stroke", function(d){ return d.weight > 0 ? "blue":"red"; } )
-				.style("stroke-width",  function(d){ return linkSizeScale(Math.abs(d.weight)); } );
+				.style("stroke-width",  function(d){ return d.scale(Math.abs(d.weight)); } );
 
 			// // console.log(selector);
 			// selector.enter().append("graph-line")

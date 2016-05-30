@@ -136,7 +136,10 @@ Creature.prototype.compute_reward = function(tile, action){
 				// if neighbour tile is food
 				if( neighbour_tiles[direction].entity_type === constants.entities.food ){
 					// eat reward
-					reward = constants.rewards.eat;
+					if( reward !== constants.rewards.eat)
+						reward = constants.rewards.eat;
+					else
+						reward +=constants.rewards.eat;
 					goal_reached = true;
 					eat = true;
 				}
