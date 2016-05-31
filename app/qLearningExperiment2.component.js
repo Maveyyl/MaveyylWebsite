@@ -1,21 +1,22 @@
 (function(app) {
 
-	app.components.qLearningExperiment1 = ng.core.Component({
-		selector: 'q-learning-experiment-1',
-		templateUrl: "templates/machine_learning/q_learning_experiment_1.html",
+	app.components.qLearningExperiment2 = ng.core.Component({
+		selector: 'q-learning-experiment-2',
+		templateUrl: "templates/machine_learning/q_learning_experiment_2.html",
 	})
 	.Class({
 		constructor: function(router){
 			if( app.settings.verbose )
-				console.log("QLearningExperiment1");
+				console.log("QLearningExperiment2");
 		},
 		ngOnInit: function(){
 			var _this = this;
 
+
 			Promise.all([
 				SystemJS.import('lib/phaser/2.4.8/phaser.js'),
-				SystemJS.import('app/QLearningExperiment1/constants.js'),
-				SystemJS.import('app/QLearningExperiment1/World.js'),
+				SystemJS.import('app/QLearningExperiment2/constants.js'),
+				SystemJS.import('app/QLearningExperiment2/World.js'),
 				SystemJS.import('lib/d3/3.5.16/d3.min.js'),
 				SystemJS.import('app/graphUtils.js'),
 			]).then(function(modules) {
@@ -32,7 +33,7 @@
 					_this.constants.map_size * _this.world_sprite_size + 1, 
 					_this.constants.map_size * _this.world_sprite_size + 1, 
 					Phaser.AUTO, 
-					'experiment-1-phaser', 
+					'experiment-2-phaser', 
 					{ 
 						preload: preload, 
 						create: create, 
@@ -45,11 +46,11 @@
 
 				// function in charge of preloading assets of the Phaser game
 				function preload () {
-					_this.game.load.image('dead_plant', 'img/experiment1/dead_plant.png');
-					_this.game.load.image('food', 'img/experiment1/food.png');
-					_this.game.load.image('grass', 'img/experiment1/grass.png');
-					_this.game.load.image('plant', 'img/experiment1/plant.png');
-					_this.game.load.image('creature', 'img/experiment1/creature.png');
+					_this.game.load.image('ground', 'img/experiment2/ground.png');
+					_this.game.load.image('creature', 'img/experiment2/creature.png');
+					_this.game.load.image('small_plant', 'img/experiment2/small_plant.png');
+					_this.game.load.image('medium_plant', 'img/experiment2/medium_plant.png');
+					_this.game.load.image('big_plant', 'img/experiment2/big_plant.png');
 				}
 
 				// function in charge of initializing the Phaser game
@@ -58,13 +59,13 @@
 					// will randomply set objects and everything up according to constant.js data
 					_this.world = new World();
 
-					// we draw a grass sprite for every tile of the world
-					// we also maintain an array of sprites to draw on the top of the grass tiles
+					// we draw a ground sprite for every tile of the world
+					// we also maintain an array of sprites to draw on the top of the ground tiles
 					_this.sprites = new Array(_this.world.map_size);
 					for(var y=0;y<_this.world.map_size;y++){
 						_this.sprites[y] = new Array(_this.world.map_size).fill(undefined);
 						for(var x=0;x<_this.world.map_size;x++){
-							_this.game.add.sprite( 1 + x*_this.world_sprite_size, 1+ y*_this.world_sprite_size, "grass");
+							_this.game.add.sprite( 1 + x*_this.world_sprite_size, 1+ y*_this.world_sprite_size, "ground");
 						}
 					}
 
@@ -86,30 +87,30 @@
 
 					// var used to compute averages of stat graphes
 					_this.cumul_error = 0;
-					_this.cumul_behavior = 0;
-					_this.cumul_near_food = 0;
+					_this.cumul_random_behavior = 0;
+					_this.cumul_plant_nearby = 0;
+					_this.cumul_big_plant_nearby = 0;
 					_this.cumul_eat = 0;
-					_this.cumul_near_plant = 0;
-					_this.cumul_hit = 0;
+					_this.cumul_feed = 0;
 
 					// raw data that we will provide to our graphes
 					_this.avg_error = [];
-					_this.avg_behavior = [];
-					_this.avg_near_food = [];
+					_this.avg_random_behavior = [];
+					_this.avg_plant_nearby = [];
+					_this.avg_big_plant_nearby = [];
 					_this.avg_eat = [];
-					_this.avg_near_plant= [];
-					_this.avg_hit = [];
+					_this.avg_feed = [];
 
 					_this.iterations = [];
 
 
 					// create graphes to display our stats
 					_this.avg_error_graph = app.graphUtils.generic2DGraph("agv-error", _this.iterations,  _this.avg_error, 150);
-					_this.avg_behavior_graph = app.graphUtils.generic2DGraph("agv-behavior", _this.iterations,  _this.avg_behavior, 150);
-					_this.avg_near_food_graph = app.graphUtils.generic2DGraph("agv-near-food", _this.iterations,  _this.avg_near_food, 150);
-					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
-					_this.avg_near_plant_graph = app.graphUtils.generic2DGraph("agv-near-plant", _this.iterations,  _this.avg_near_plant, 150);
-					_this.avg_hit_graph = app.graphUtils.generic2DGraph("agv-hit", _this.iterations,  _this.avg_hit, 150);
+					_this.avg_random_behavior_graph = app.graphUtils.generic2DGraph("agv-behavior", _this.iterations,  _this.avg_random_behavior, 150);
+					_this.avg_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-near-food", _this.iterations,  _this.avg_plant_nearby, 150);
+					_this.avg_big_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_big_plant_nearby, 150);
+					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-near-plant", _this.iterations,  _this.avg_eat, 150);
+					_this.avg_feed_graph = app.graphUtils.generic2DGraph("agv-hit", _this.iterations,  _this.avg_feed, 150);
 
 					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 500);
 
@@ -132,30 +133,30 @@
 
 							// compute new stats and add them to data
 							_this.avg_error.push( _this.cumul_error / _this.stats_update );
-							_this.avg_behavior.push( _this.cumul_behavior / _this.stats_update );
-							_this.avg_near_food.push( _this.cumul_near_food / _this.stats_update );
-							_this.avg_eat.push( _this.cumul_eat / (_this.cumul_near_food+1) );
-							_this.avg_near_plant.push( _this.cumul_near_plant / _this.stats_update );
-							_this.avg_hit.push( _this.cumul_hit / (_this.cumul_near_plant+1) );
+							_this.avg_random_behavior.push( _this.cumul_random_behavior / _this.stats_update );
+							_this.avg_plant_nearby.push( _this.cumul_plant_nearby / _this.stats_update );
+							_this.avg_big_plant_nearby.push( _this.cumul_big_plant_nearby / _this.stats_update );
+							_this.avg_eat.push( _this.cumul_eat / (_this.cumul_plant_nearby+1) );
+							_this.avg_feed.push( _this.cumul_feed / (_this.cumul_plant_nearby - _this.cumul_big_plant_nearby+1) );
 							_this.iterations.push( _this.world.creature.nn.iter_count );
 
 							// update the graphes displaying the stats
 							_this.avg_error_graph.update( _this.iterations,  _this.avg_error);
-							_this.avg_behavior_graph.update( _this.iterations,  _this.avg_behavior);
-							_this.avg_near_food_graph.update( _this.iterations,  _this.avg_near_food);
+							_this.avg_random_behavior_graph.update( _this.iterations,  _this.avg_random_behavior);
+							_this.avg_plant_nearby_graph.update( _this.iterations,  _this.avg_plant_nearby);
+							_this.avg_big_plant_nearby_graph.update( _this.iterations,  _this.avg_big_plant_nearby);
 							_this.avg_eat_graph.update( _this.iterations,  _this.avg_eat);
-							_this.avg_near_plant_graph.update( _this.iterations,  _this.avg_near_plant);
-							_this.avg_hit_graph.update( _this.iterations,  _this.avg_hit);
+							_this.avg_feed_graph.update( _this.iterations,  _this.avg_feed);
 							// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 700);
 							_this.nn_graph.update( _this.world.creature.nn.theta);
 
 							// reset the cumulatives in order to compute the next cycle of averages
 							_this.cumul_error = 0;
-							_this.cumul_behavior = 0;
-							_this.cumul_near_food = 0;
+							_this.cumul_random_behavior = 0;
+							_this.cumul_plant_nearby = 0;
+							_this.cumul_big_plant_nearby = 0;
 							_this.cumul_eat = 0;
-							_this.cumul_near_plant = 0;
-							_this.cumul_hit = 0;
+							_this.cumul_feed = 0;
 
 
 							// if there's more than 200 dots to display per graph
@@ -163,11 +164,11 @@
 							if( _this.iterations.length === _this.max_graph_dots ){
 
 								_this.avg_error = data_couple_average( _this.avg_error );
-								_this.avg_behavior = data_couple_average( _this.avg_behavior );
-								_this.avg_near_food = data_couple_average( _this.avg_near_food );
+								_this.avg_random_behavior = data_couple_average( _this.avg_random_behavior );
+								_this.avg_plant_nearby = data_couple_average( _this.avg_plant_nearby );
+								_this.avg_big_plant_nearby = data_couple_average( _this.avg_big_plant_nearby );
 								_this.avg_eat = data_couple_average( _this.avg_eat );
-								_this.avg_near_plant = data_couple_average( _this.avg_near_plant );
-								_this.avg_hit = data_couple_average( _this.avg_hit );
+								_this.avg_feed = data_couple_average( _this.avg_feed );
 								_this.iterations = data_couple_average( _this.iterations );
 
 								// increase by 2 the number of update cycle before computing stats
@@ -180,11 +181,11 @@
 
 						_this.world.update();
 						_this.cumul_error += _this.world.creature.nn.J[ _this.world.creature.nn.J.length -1];
-						_this.cumul_behavior += _this.world.creature.random;
-						_this.cumul_near_food += _this.world.creature.near_food;
-						_this.cumul_eat += _this.world.creature.just_ate;
-						_this.cumul_near_plant += _this.world.creature.near_plant;
-						_this.cumul_hit += _this.world.creature.just_hit;
+						_this.cumul_random_behavior += _this.world.creature.track.random_behavior;
+						_this.cumul_plant_nearby += _this.world.creature.track.plant_nearby;
+						_this.cumul_big_plant_nearby += _this.world.creature.track.big_plant_nearby;
+						_this.cumul_eat += _this.world.creature.track.ate_plant;
+						_this.cumul_feed += _this.world.creature.track.fed_plant;
 					}
 
 					// update the rendering
@@ -226,17 +227,19 @@
 					sprites[y][x] = undefined;
 				}
 
-				if( world.map[y][x].entity_type === constants.entities.creature )
-					sprites[y][x] = game.add.sprite( 1+x* sprite_size, 1+y*sprite_size, "creature");
+				if( !world.map[y][x].empty ){
+					if( world.map[y][x].entity.type === constants.entities.creature )
+						sprites[y][x] = game.add.sprite( 1+x* sprite_size, 1+y*sprite_size, "creature");
 
-				if( world.map[y][x].entity_type === constants.entities.plant && !world.map[y][x].entity.dead )
-					sprites[y][x] = game.add.sprite( 1+x*sprite_size, 1+y*sprite_size, "plant");
+					if( world.map[y][x].entity.type  === constants.entities.small_plant )
+						sprites[y][x] = game.add.sprite( 1+x*sprite_size, 1+y*sprite_size, "small_plant");
 
-				if( world.map[y][x].entity_type === constants.entities.plant && world.map[y][x].entity.dead )
-					sprites[y][x] = game.add.sprite( 1+x*sprite_size, 1+y*sprite_size, "dead_plant");
+					if( world.map[y][x].entity.type  === constants.entities.medium_plant )
+						sprites[y][x] = game.add.sprite( 1+x*sprite_size, 1+y*sprite_size, "medium_plant");
 
-				if( world.map[y][x].entity_type === constants.entities.food )
-					sprites[y][x] = game.add.sprite( 1+x*sprite_size, 1+y*sprite_size, "food");
+					if( world.map[y][x].entity.type  === constants.entities.big_plant )
+						sprites[y][x] = game.add.sprite( 1+x*sprite_size, 1+y*sprite_size, "big_plant");
+				}
 			}
 		}
 

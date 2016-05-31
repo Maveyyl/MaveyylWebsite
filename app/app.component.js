@@ -28,11 +28,18 @@
 			navbarPosition: "left",
 			children: [
 				{
-					name: "QLearningExperimentsPage",
-					description: "Q Learning Experiments",
-					path: "/q_learning_experiments",
+					name: "QLearningExperimentsPage1",
+					description: "Q Learning Experiments1",
+					path: "/q_learning_experiments1",
 					templateUrl: "templates/machine_learning/q_learning_experiment_1_page.html",
 					directives: [app.components.qLearningExperiment1]
+				},
+				{
+					name: "QLearningExperimentsPage2",
+					description: "Q Learning Experiments2",
+					path: "/q_learning_experiments2",
+					templateUrl: "templates/machine_learning/q_learning_experiment_2_page.html",
+					directives: [app.components.qLearningExperiment2]
 				}
 			]
 		},

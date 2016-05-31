@@ -301,8 +301,11 @@ Creature.prototype.update = function( verbose){
 			// update reward with future possible reward
 			var replay_reward = experience.reward;
 			var replay_prediction = this.get_predictions( experience.state );
-			var replay_next_prediction = this.get_predictions( experience.next_state );
-			replay_reward += constants.discount_factor * Math.max(...replay_prediction);
+
+			if( replay_reward < constants.rewards.eat ){
+				var replay_next_prediction = this.get_predictions( experience.next_state );
+				replay_reward += constants.discount_factor * Math.max(...replay_next_prediction);
+			}
 			
 			// learn
 			var replay_rewards = replay_prediction.slice();
