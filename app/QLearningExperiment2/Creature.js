@@ -86,7 +86,7 @@ Creature.prototype.get_updated_sensors = function(tile){
 			}
 		}
 	}
-
+	console.log(sensors);
 	return sensors;
 };
 /*
@@ -112,9 +112,9 @@ Creature.prototype.compute_reward = function(action){
 	// if directional action
 	else if( action < 4 ){
 		var next_tile = this.tile.get_neighbour_tile(action);
-		// // if destination tile not empty, forbidden action
-		// if( !next_tile.empty )
-		// 	reward = constants.forbidden_action;
+		// if destination tile not empty, forbidden action
+		if( !next_tile.empty )
+			reward = constants.rewards.forbidden_action;
 	}
 	// if not directional action
 	else {
@@ -129,7 +129,6 @@ Creature.prototype.compute_reward = function(action){
 					next_tile.entity.type === constants.entities.medium_plant ||
 					next_tile.entity.type === constants.entities.big_plant) ){
 					reward += constants.rewards.goal * next_tile.entity.get_size();
-					// reward += constants.rewards.goal ;
 				}
 			}
 		}
@@ -203,8 +202,7 @@ Creature.prototype.apply_action = function(action){
 				// if action is feeding plants while there's a plant on the neighbour tile
 				if( !next_tile.empty && 
 					(next_tile.entity.type === constants.entities.small_plant ||
-					next_tile.entity.type === constants.entities.medium_plant ||
-					next_tile.entity.type === constants.entities.big_plant) ){
+					next_tile.entity.type === constants.entities.medium_plant ) ){
 					next_tile.entity.get_fed();
 					this.track.fed_plant = true;
 				}
@@ -280,7 +278,7 @@ Creature.prototype.update = function( ){
 	}
 		
 	// update reward with future possible reward if goal action hasn't been reached
-	if( reward !== constants.rewards.goal ){
+	if( reward < constants.rewards.goal ){
 		var next_predictions = this.get_predictions(next_sensors);
 		reward = reward + constants.discount_factor * Math.max(...next_predictions);
 	}
@@ -313,7 +311,7 @@ Creature.prototype.update = function( ){
 			
 			var replay_reward = experience.reward;
 			// update reward with future possible reward
-			if( replay_reward !== constants.rewards.goal ){
+			if( replay_reward < constants.rewards.goal ){
 				var replay_next_prediction = this.get_predictions( experience.next_state );
 				replay_reward += constants.discount_factor * Math.max(...replay_next_prediction);
 			}

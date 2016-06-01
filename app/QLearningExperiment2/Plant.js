@@ -10,6 +10,7 @@ function Plant(world){
 	this.tile = undefined;
 	this.type = constants.entities.small_plant;
 
+	this.just_got_fed = false;
 }
 
 Plant.prototype.get_fed = function(){
@@ -32,5 +33,5 @@ Plant.prototype.get_size = function(){
 }
 
 Plant.prototype.update = function(explore, verbose){
-	
+
 };

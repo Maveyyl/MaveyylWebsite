@@ -106,11 +106,11 @@
 
 					// create graphes to display our stats
 					_this.avg_error_graph = app.graphUtils.generic2DGraph("agv-error", _this.iterations,  _this.avg_error, 150);
-					_this.avg_random_behavior_graph = app.graphUtils.generic2DGraph("agv-behavior", _this.iterations,  _this.avg_random_behavior, 150);
-					_this.avg_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-near-food", _this.iterations,  _this.avg_plant_nearby, 150);
-					_this.avg_big_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_big_plant_nearby, 150);
-					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-near-plant", _this.iterations,  _this.avg_eat, 150);
-					_this.avg_feed_graph = app.graphUtils.generic2DGraph("agv-hit", _this.iterations,  _this.avg_feed, 150);
+					_this.avg_random_behavior_graph = app.graphUtils.generic2DGraph("agv-random-behavior", _this.iterations,  _this.avg_random_behavior, 150);
+					_this.avg_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-plant-nearby", _this.iterations,  _this.avg_plant_nearby, 150);
+					_this.avg_big_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-big-plant-nearby", _this.iterations,  _this.avg_big_plant_nearby, 150);
+					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
+					_this.avg_feed_graph = app.graphUtils.generic2DGraph("agv-feed", _this.iterations,  _this.avg_feed, 150);
 
 					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 500);
 

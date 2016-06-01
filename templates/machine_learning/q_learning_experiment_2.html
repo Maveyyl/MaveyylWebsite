@@ -19,7 +19,7 @@
 	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">G1: Average Error, should decrease until reaching stability</h3>
+				<h3 class="panel-title">G1: Average Error</h3>
 			</div>
 			<div class="panel-body">
 				<svg id="agv-error"></svg>
@@ -28,10 +28,10 @@
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">G2: Average time spent exploring instead of exploiting, should decrease to 0.1</h3>
+				<h3 class="panel-title">G2: Average time spent exploring instead of exploiting</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-behavior"></svg>
+				<svg id="agv-random-behavior"></svg>
 			</div>
 		</div>
 
@@ -40,19 +40,19 @@
 	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">G3: Average amount of time food was nearby, should stay around 0.15</h3>
+				<h3 class="panel-title">G3: Average amount of time plant was nearby</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-near-food"></svg>
+				<svg id="agv-plant-nearby"></svg>
 			</div>
 		</div>
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">G4: Average amount of time food was eaten when nearby, should increase up to 0.9</h3>
+				<h3 class="panel-title">G4: Average amount of time big plant was nearby</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-eat"></svg>
+				<svg id="agv-big-plant-nearby"></svg>
 			</div>
 		</div>
 	</div>
@@ -60,19 +60,19 @@
 	<div class="col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">G5: Average amount of time plant was nearby</h3>
+				<h3 class="panel-title">G5: Average amount of time plant was eaten when nearby</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-near-plant"></svg>
+				<svg id="agv-eat"></svg>
 			</div>
 		</div>
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">G6: Average amount of time plant was hit when nearby.</h3>
+				<h3 class="panel-title">G6: Average amount of time plant was fed when nearby.</h3>
 			</div>
 			<div class="panel-body">
-				<svg id="agv-hit"></svg>
+				<svg id="agv-feed"></svg>
 			</div>
 		</div>
 	</div>

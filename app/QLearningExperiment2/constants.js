@@ -8,7 +8,7 @@ module.exports= constants;
  * Rewards
  */
 constants.rewards = {
-	neutral: 10,
+	neutral: 0,
 	no_action: 0,
 	forbidden_action: 0,
 	goal: 100
@@ -96,17 +96,17 @@ constants.plant_count_max = 20;
 /*
  * Neural Network
  */
-constants.network = [ constants.sensors.count, 15, constants.actions.count ];
+constants.network = [ constants.sensors.count, 20, constants.actions.count ];
 constants.learning_rate = 0.00001;
 constants.regularization_parameter = 0;
-constants.discount_factor = 0.7;
+constants.discount_factor = 0.8;
 
 constants.theta_init_upper_range = 1;
 constants.theta_init_lower_range = -1;
 
 constants.experience_replay = false;
 constants.experience_pool_size = 50000;
-constants.experience_replay_count = 2;
+constants.experience_replay_count = 8;
 
 
 constants.epsilon_max = 1;
