@@ -120,7 +120,10 @@
 
 					// computes how much simulation update must be done during this phaser update
 					// according to elapsed time since last simulation update
-					_this.elapsed_time_cumul += _this.game.time.elapsedMS;
+					if( _this.game.time.elapsedMS < 1000 ) // weirdly if we leave this page and come back, this value will be very big
+						_this.elapsed_time_cumul += _this.game.time.elapsedMS;
+
+
 					var updates_to_do = Math.floor( (_this.updates_per_second * _this.elapsed_time_cumul)/1000 ) ;
 
 					_this.elapsed_time_cumul = _this.elapsed_time_cumul - (updates_to_do*1000/_this.updates_per_second);
@@ -146,8 +149,8 @@
 							_this.avg_eat_graph.update( _this.iterations,  _this.avg_eat);
 							_this.avg_near_plant_graph.update( _this.iterations,  _this.avg_near_plant);
 							_this.avg_hit_graph.update( _this.iterations,  _this.avg_hit);
-							// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 700);
-							_this.nn_graph.update( _this.world.creature.nn.theta);
+							
+							_this.nn_graph.update( _this.world.creature.nn.theta );
 
 							// reset the cumulatives in order to compute the next cycle of averages
 							_this.cumul_error = 0;
@@ -202,6 +205,7 @@
 			}
 		},
 		ngOnDestroy: function(){
+			this.game.update = function(){}; // or else will trigger an error for some reason if page is left
 			this.game.destroy();
 		}
 	});

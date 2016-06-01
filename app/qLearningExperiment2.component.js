@@ -121,7 +121,9 @@
 
 					// computes how much simulation update must be done during this phaser update
 					// according to elapsed time since last simulation update
-					_this.elapsed_time_cumul += _this.game.time.elapsedMS;
+					if( _this.game.time.elapsedMS < 1000 ) // weirdly if we leave this page and come back, this value will be very big
+						_this.elapsed_time_cumul += _this.game.time.elapsedMS;
+					
 					var updates_to_do = Math.floor( (_this.updates_per_second * _this.elapsed_time_cumul)/1000 ) ;
 
 					_this.elapsed_time_cumul = _this.elapsed_time_cumul - (updates_to_do*1000/_this.updates_per_second);
@@ -203,6 +205,7 @@
 			}
 		},
 		ngOnDestroy: function(){
+			this.game.update = function(){}; // or else will trigger an error for some reason if page is left
 			this.game.destroy();
 		}
 	});
