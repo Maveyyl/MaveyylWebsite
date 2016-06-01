@@ -81,13 +81,14 @@
 					// this is to keep track of the elapsed time since last simulation updates
 					_this.elapsed_time_cumul = 0;
 					// how often we want to compute stats and update graphes per simulation updates
-					_this.stats_update = _this.updates_per_second * 100;
+					_this.stats_update = _this.updates_per_second * 50;
 					// maximum number of dot to be displayed on graphes
 					_this.max_graph_dots = 200;
 
 					// var used to compute averages of stat graphes
 					_this.cumul_error = 0;
 					_this.cumul_random_behavior = 0;
+					_this.cumul_reward = 0;
 					_this.cumul_plant_nearby = 0;
 					_this.cumul_big_plant_nearby = 0;
 					_this.cumul_eat = 0;
@@ -96,6 +97,7 @@
 					// raw data that we will provide to our graphes
 					_this.avg_error = [];
 					_this.avg_random_behavior = [];
+					_this.avg_reward = [];
 					_this.avg_plant_nearby = [];
 					_this.avg_big_plant_nearby = [];
 					_this.avg_eat = [];
@@ -107,8 +109,8 @@
 					// create graphes to display our stats
 					_this.avg_error_graph = app.graphUtils.generic2DGraph("agv-error", _this.iterations,  _this.avg_error, 150);
 					_this.avg_random_behavior_graph = app.graphUtils.generic2DGraph("agv-random-behavior", _this.iterations,  _this.avg_random_behavior, 150);
+					_this.avg_reward_graph = app.graphUtils.generic2DGraph("avg-reward", _this.iterations, _this.avg_reward, 150);
 					_this.avg_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-plant-nearby", _this.iterations,  _this.avg_plant_nearby, 150);
-					_this.avg_big_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-big-plant-nearby", _this.iterations,  _this.avg_big_plant_nearby, 150);
 					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
 					_this.avg_feed_graph = app.graphUtils.generic2DGraph("agv-feed", _this.iterations,  _this.avg_feed, 150);
 
@@ -136,8 +138,8 @@
 							// compute new stats and add them to data
 							_this.avg_error.push( _this.cumul_error / _this.stats_update );
 							_this.avg_random_behavior.push( _this.cumul_random_behavior / _this.stats_update );
+							_this.avg_reward.push( _this.cumul_reward / _this.stats_update );
 							_this.avg_plant_nearby.push( _this.cumul_plant_nearby / _this.stats_update );
-							_this.avg_big_plant_nearby.push( _this.cumul_big_plant_nearby / _this.stats_update );
 							_this.avg_eat.push( _this.cumul_eat / (_this.cumul_plant_nearby+1) );
 							_this.avg_feed.push( _this.cumul_feed / (_this.cumul_plant_nearby - _this.cumul_big_plant_nearby+1) );
 							_this.iterations.push( _this.world.creature.nn.iter_count );
@@ -145,8 +147,8 @@
 							// update the graphes displaying the stats
 							_this.avg_error_graph.update( _this.iterations,  _this.avg_error);
 							_this.avg_random_behavior_graph.update( _this.iterations,  _this.avg_random_behavior);
+							_this.avg_reward_graph.update( _this.iterations, _this.avg_reward );
 							_this.avg_plant_nearby_graph.update( _this.iterations,  _this.avg_plant_nearby);
-							_this.avg_big_plant_nearby_graph.update( _this.iterations,  _this.avg_big_plant_nearby);
 							_this.avg_eat_graph.update( _this.iterations,  _this.avg_eat);
 							_this.avg_feed_graph.update( _this.iterations,  _this.avg_feed);
 							// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 700);
@@ -155,8 +157,8 @@
 							// reset the cumulatives in order to compute the next cycle of averages
 							_this.cumul_error = 0;
 							_this.cumul_random_behavior = 0;
+							_this.cumul_reward = 0;
 							_this.cumul_plant_nearby = 0;
-							_this.cumul_big_plant_nearby = 0;
 							_this.cumul_eat = 0;
 							_this.cumul_feed = 0;
 
@@ -167,8 +169,8 @@
 
 								_this.avg_error = data_couple_average( _this.avg_error );
 								_this.avg_random_behavior = data_couple_average( _this.avg_random_behavior );
+								_this.avg_reward = data_couple_average( _this.avg_reward );
 								_this.avg_plant_nearby = data_couple_average( _this.avg_plant_nearby );
-								_this.avg_big_plant_nearby = data_couple_average( _this.avg_big_plant_nearby );
 								_this.avg_eat = data_couple_average( _this.avg_eat );
 								_this.avg_feed = data_couple_average( _this.avg_feed );
 								_this.iterations = data_couple_average( _this.iterations );
@@ -184,8 +186,8 @@
 						_this.world.update();
 						_this.cumul_error += _this.world.creature.nn.J[ _this.world.creature.nn.J.length -1];
 						_this.cumul_random_behavior += _this.world.creature.track.random_behavior;
+						_this.cumul_reward += _this.world.creature.track.reward;
 						_this.cumul_plant_nearby += _this.world.creature.track.plant_nearby;
-						_this.cumul_big_plant_nearby += _this.world.creature.track.big_plant_nearby;
 						_this.cumul_eat += _this.world.creature.track.ate_plant;
 						_this.cumul_feed += _this.world.creature.track.fed_plant;
 					}

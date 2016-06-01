@@ -16,8 +16,6 @@ module.exports = Creature;
 	this.regularization_parameter = constants.regularization_parameter;
 
 	this.random_behavior_probability = constants.epsilon_max;
-
-	this.goal_reached = false;
 	
 	this.experience_replay = constants.experience_replay;
 	if( this.experience_replay ){
@@ -41,6 +39,7 @@ module.exports = Creature;
 
 	// keep track of what the creature has done, useful for statistics
 	this.track = {
+		reward: 0,
 		random_behavior: false,
 		forbidden_action: false,
 		did_nothing: false,
@@ -67,11 +66,11 @@ Creature.prototype.get_updated_sensors = function(tile){
 	for(var direction=0;direction<constants.directions.count;direction++){
 		// scan the adjacent tile and set sensors accordingly
 		var next_tile = tile.get_neighbour_tile( direction );
-		if( !next_tile.empty && next_tile.entity === constants.entities.small_plant)
+		if( !next_tile.empty && next_tile.entity.type === constants.entities.small_plant)
 			sensors[direction] = constants.sensor_activation_value;
-		else if( !next_tile.empty && next_tile.entity === constants.entities.medium_plant)
+		else if( !next_tile.empty && next_tile.entity.type === constants.entities.medium_plant)
 			sensors[direction+4] = constants.sensor_activation_value;
-		else if( !next_tile.empty && next_tile.entity === constants.entities.big_plant)
+		else if( !next_tile.empty && next_tile.entity.type === constants.entities.big_plant)
 			sensors[direction+8] = constants.sensor_activation_value;
 
 		// set the "something near" sensors if next tile isn't empty
@@ -86,7 +85,7 @@ Creature.prototype.get_updated_sensors = function(tile){
 			}
 		}
 	}
-	console.log(sensors);
+
 	return sensors;
 };
 /*
@@ -145,7 +144,6 @@ Creature.prototype.compute_reward = function(action){
  * apply a given action of the creature in its world
  */
 Creature.prototype.apply_action = function(action){
-	// this.goal_reached = true/false...
 
 	// here we compute some data to track
 	for(var direction=0;direction<constants.directions.count;direction++){
@@ -218,6 +216,7 @@ Creature.prototype.apply_action = function(action){
 Creature.prototype.update = function( ){
 	// resseting tracked data
 	this.track = {
+		reward: 0,
 		random_behavior: false,
 		forbidden_action: false,
 		did_nothing: false,
@@ -255,7 +254,7 @@ Creature.prototype.update = function( ){
 
 	// compute the base reward for the chosen action
 	var reward = this.compute_reward(action_choice);
-
+	this.track.reward = reward;
 	// apply chosen action
 	this.apply_action(action_choice);
 
@@ -282,6 +281,7 @@ Creature.prototype.update = function( ){
 		var next_predictions = this.get_predictions(next_sensors);
 		reward = reward + constants.discount_factor * Math.max(...next_predictions);
 	}
+
 
 	// preparing reward for the learning function
 	var rewards = predictions.slice();

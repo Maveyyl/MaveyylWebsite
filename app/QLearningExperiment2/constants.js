@@ -104,11 +104,11 @@ constants.discount_factor = 0.8;
 constants.theta_init_upper_range = 1;
 constants.theta_init_lower_range = -1;
 
-constants.experience_replay = false;
+constants.experience_replay = true;
 constants.experience_pool_size = 50000;
 constants.experience_replay_count = 8;
 
 
 constants.epsilon_max = 1;
-constants.epsilon_min = 0.1;
-constants.epsilon_step = 0.00005;
+constants.epsilon_min = 0.05;
+constants.epsilon_step = 0.001;
