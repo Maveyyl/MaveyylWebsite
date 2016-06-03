@@ -111,4 +111,4 @@ constants.experience_replay_count = 8;
 
 constants.epsilon_max = 1;
 constants.epsilon_min = 0.05;
-constants.epsilon_step = 0.001;
+constants.epsilon_step = 0.0001;
