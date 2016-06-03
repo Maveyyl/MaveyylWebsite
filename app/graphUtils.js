@@ -353,19 +353,19 @@
 		// if no dimensions given, take the maximum
 		width = width || getElementMaxWidth(el) ;
 		height = height || getElementMaxHeight(el);
-
+		
 		// if min dimensions given, make sure the minimums are respected
 		if( minWidth && width < minWidth )
 			width = minWidth;
 		if( minHeight && width < minHeight )
 			height = minHeight;
 
-		var ratio = width / height;
-
-		if( ratio > fixed_ratio ) // width is limited
-			height = width / fixed_ratio;
-		else // height is limited
-			width = height * fixed_ratio;
+		// var ratio = width / height;
+		// if( ratio < fixed_ratio ) // width is limited
+		// 	height = width / fixed_ratio;
+		// else // height is limited
+		// 	width = height * fixed_ratio;
+		height = width / fixed_ratio;
 
 
 		return { width: width, height: height };
