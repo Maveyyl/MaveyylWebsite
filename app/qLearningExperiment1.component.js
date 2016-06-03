@@ -111,7 +111,7 @@
 					_this.avg_near_plant_graph = app.graphUtils.generic2DGraph("agv-near-plant", _this.iterations,  _this.avg_near_plant, 150);
 					_this.avg_hit_graph = app.graphUtils.generic2DGraph("agv-hit", _this.iterations,  _this.avg_hit, 150);
 
-					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 500);
+					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta);
 
 					window.creature = _this.world.creature;
 				}

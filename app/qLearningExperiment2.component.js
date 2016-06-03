@@ -114,7 +114,7 @@
 					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
 					_this.avg_feed_graph = app.graphUtils.generic2DGraph("agv-feed", _this.iterations,  _this.avg_feed, 150);
 
-					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 500);
+					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta);
 
 					window.creature = _this.world.creature;
 				}
