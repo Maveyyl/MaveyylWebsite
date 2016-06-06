@@ -1,6 +1,7 @@
 (function(app) {
 
 	app.graphUtils = {
+		scalableGeneric2DGraph: scalableGeneric2DGraph,
 		generic2DGraph: generic2DGraph,
 		neuralNetworkGraph: neuralNetworkGraph
 	};
@@ -198,6 +199,59 @@
 	}
 
 
+	function scalableGeneric2DGraph(element_id, point_count_max, starting_step_size, height, width){
+		var r = {};
+		r.graph = generic2DGraph(element_id, [], [], height, width);
+
+		r.point_count_max = point_count_max;
+		r.step_size = starting_step_size;
+		r.data_x = [];
+		r.data_y = [];
+		r.cumul_data_x = 0;
+		r.cumul_data_y = 0;
+		r.pending_data_count = 0;
+
+		r.update = function(x, y){
+			// adds new data to the cumulatives
+			this.cumul_data_x+= x;
+			this.cumul_data_y+= y;
+			this.pending_data_count++;
+
+			// if we reached enough samples data in our cumulatives
+			if( this.pending_data_count === this.step_size ){
+				// we compute the average of it and reset the cumulatives
+				this.data_x.push( this.cumul_data_x/this.step_size );
+				this.data_y.push( this.cumul_data_y/this.step_size );
+				this.cumul_data_x = 0;
+				this.cumul_data_y = 0;
+				this.pending_data_count = 0;
+
+				// if the graph contains too much points
+				if( this.data_x.length === this.point_count_max ){
+					var I = this.data_x.length/2;
+					var new_data_x = new Array(I);
+					var new_data_y = new Array(I);
+					// compute the average of pairs of two points, dividing the count of points by 2
+					for(var i=0;i<I;i++){
+						new_data_x[i] = (this.data_x[i*2] + this.data_x[i*2+1]) / 2;
+						new_data_y[i] = (this.data_y[i*2] + this.data_y[i*2+1]) / 2;
+					}
+					this.data_x = new_data_x;
+					this.data_y = new_data_y;
+
+					// increase the number of data necessary before computing new points
+					this.step_size = this.step_size *2;
+				}
+
+
+				// update graph
+				this.graph.update( this.data_x, this.data_y);
+			}
+		}
+
+		return r;
+	}
+
 	function generic2DGraph(element_id, x, y, height, width){
 		var data = x.map(function(d,i){
 			return [x[i], y[i]];
@@ -317,10 +371,10 @@
 			.attr("r", 2);
 
 
-		graph.update = function(x, y){		
+		graph.update = function(x, y){	
 			var data = x.map(function(d,i){
 				return [x[i], y[i]];
-			});
+			});	
 
 			xScale.domain( d3.extent(x) );		
 			xAxis.scale(xScale);

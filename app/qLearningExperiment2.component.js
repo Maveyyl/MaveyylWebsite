@@ -85,35 +85,16 @@
 					// maximum number of dot to be displayed on graphes
 					_this.max_graph_dots = 200;
 
-					// var used to compute averages of stat graphes
-					_this.cumul_error = 0;
-					_this.cumul_random_behavior = 0;
-					_this.cumul_reward = 0;
-					_this.cumul_plant_nearby = 0;
-					_this.cumul_big_plant_nearby = 0;
-					_this.cumul_eat = 0;
-					_this.cumul_feed = 0;
-
-					// raw data that we will provide to our graphes
-					_this.avg_error = [];
-					_this.avg_random_behavior = [];
-					_this.avg_reward = [];
-					_this.avg_plant_nearby = [];
-					_this.avg_big_plant_nearby = [];
-					_this.avg_eat = [];
-					_this.avg_feed = [];
-
-					_this.iterations = [];
-
 
 					// create graphes to display our stats
-					_this.avg_error_graph = app.graphUtils.generic2DGraph("agv-error", _this.iterations,  _this.avg_error, 150);
-					_this.avg_random_behavior_graph = app.graphUtils.generic2DGraph("agv-random-behavior", _this.iterations,  _this.avg_random_behavior, 150);
-					_this.avg_reward_graph = app.graphUtils.generic2DGraph("avg-reward", _this.iterations, _this.avg_reward, 150);
-					_this.avg_plant_nearby_graph = app.graphUtils.generic2DGraph("agv-plant-nearby", _this.iterations,  _this.avg_plant_nearby, 150);
-					_this.avg_eat_graph = app.graphUtils.generic2DGraph("agv-eat", _this.iterations,  _this.avg_eat, 150);
-					_this.avg_feed_graph = app.graphUtils.generic2DGraph("agv-feed", _this.iterations,  _this.avg_feed, 150);
+					_this.avg_error_graph = app.graphUtils.scalableGeneric2DGraph("avg-error", _this.max_graph_dots,  _this.stats_update, 150);
+					_this.avg_random_behavior_graph = app.graphUtils.scalableGeneric2DGraph("avg-random-behavior", _this.max_graph_dots,  _this.stats_update, 150);
+					_this.avg_reward_graph = app.graphUtils.scalableGeneric2DGraph("avg-reward", _this.max_graph_dots,  _this.stats_update, 150);
+					_this.avg_plant_nearby_graph = app.graphUtils.scalableGeneric2DGraph("avg-plant-nearby", _this.max_graph_dots,  _this.stats_update, 150);
+					_this.avg_eat_graph = app.graphUtils.scalableGeneric2DGraph("avg-eat", _this.max_graph_dots,  _this.stats_update, 150);
+					_this.avg_feed_graph = app.graphUtils.scalableGeneric2DGraph("avg-feed", _this.max_graph_dots,  _this.stats_update, 150);
 
+				
 					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta);
 
 					window.creature = _this.world.creature;
@@ -135,61 +116,20 @@
 						// if we've reached a sufficient amount of simulation update we compute our stats
 						if( _this.world.creature.nn.iter_count % _this.stats_update === 0 ){
 
-							// compute new stats and add them to data
-							_this.avg_error.push( _this.cumul_error / _this.stats_update );
-							_this.avg_random_behavior.push( _this.cumul_random_behavior / _this.stats_update );
-							_this.avg_reward.push( _this.cumul_reward / _this.stats_update );
-							_this.avg_plant_nearby.push( _this.cumul_plant_nearby / _this.stats_update );
-							_this.avg_eat.push( _this.cumul_eat / (_this.cumul_plant_nearby+1) );
-							_this.avg_feed.push( _this.cumul_feed / (_this.cumul_plant_nearby - _this.cumul_big_plant_nearby+1) );
-							_this.iterations.push( _this.world.creature.nn.iter_count );
-
-							// update the graphes displaying the stats
-							_this.avg_error_graph.update( _this.iterations,  _this.avg_error);
-							_this.avg_random_behavior_graph.update( _this.iterations,  _this.avg_random_behavior);
-							_this.avg_reward_graph.update( _this.iterations, _this.avg_reward );
-							_this.avg_plant_nearby_graph.update( _this.iterations,  _this.avg_plant_nearby);
-							_this.avg_eat_graph.update( _this.iterations,  _this.avg_eat);
-							_this.avg_feed_graph.update( _this.iterations,  _this.avg_feed);
-							// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta, 700);
-							_this.nn_graph.update( _this.world.creature.nn.theta);
-
-							// reset the cumulatives in order to compute the next cycle of averages
-							_this.cumul_error = 0;
-							_this.cumul_random_behavior = 0;
-							_this.cumul_reward = 0;
-							_this.cumul_plant_nearby = 0;
-							_this.cumul_eat = 0;
-							_this.cumul_feed = 0;
-
-
-							// if there's more than 200 dots to display per graph
-							// compute averages couples of data and reduce the amount of data to 100
-							if( _this.iterations.length === _this.max_graph_dots ){
-
-								_this.avg_error = data_couple_average( _this.avg_error );
-								_this.avg_random_behavior = data_couple_average( _this.avg_random_behavior );
-								_this.avg_reward = data_couple_average( _this.avg_reward );
-								_this.avg_plant_nearby = data_couple_average( _this.avg_plant_nearby );
-								_this.avg_eat = data_couple_average( _this.avg_eat );
-								_this.avg_feed = data_couple_average( _this.avg_feed );
-								_this.iterations = data_couple_average( _this.iterations );
-
-								// increase by 2 the number of update cycle before computing stats
-								_this.stats_update = _this.stats_update*2;
-							}
+							_this.nn_graph.update( _this.world.creature.nn.theta );
 
 							// flush J or it can grow to millions of entries
 							_this.world.creature.nn.J = [];
 						}
 
 						_this.world.update();
-						_this.cumul_error += _this.world.creature.nn.J[ _this.world.creature.nn.J.length -1];
-						_this.cumul_random_behavior += _this.world.creature.track.random_behavior;
-						_this.cumul_reward += _this.world.creature.track.reward;
-						_this.cumul_plant_nearby += _this.world.creature.track.plant_nearby;
-						_this.cumul_eat += _this.world.creature.track.ate_plant;
-						_this.cumul_feed += _this.world.creature.track.fed_plant;
+
+						_this.avg_error_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.nn.J[ _this.world.creature.nn.J.length -1]);
+						_this.avg_random_behavior_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.random_behavior);
+						_this.avg_reward_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.reward);
+						_this.avg_plant_nearby_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.plant_nearby);
+						_this.avg_eat_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.ate_plant);
+						_this.avg_feed_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.fed_plant);
 					}
 
 					// update the rendering
@@ -212,17 +152,6 @@
 		}
 	});
 
-
-	// function that computes average two entries by two entries and outputs a two times smaller array
-	function data_couple_average( array ){
-		var I = array.length/2;
-		var array2 = new Array(I);
-		for(var i=0;i<I;i++){
-			array2[i] = (array[i*2] + array[i*2+1]) / 2;
-		}
-
-		return array2;
-	}
 
 	function update_phaser_rendering( game, sprites, world, constants, sprite_size){
 		for(var y=0;y<world.map_size;y++){
