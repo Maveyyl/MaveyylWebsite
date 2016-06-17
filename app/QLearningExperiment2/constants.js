@@ -101,9 +101,6 @@ constants.learning_rate = 0.00001;
 constants.regularization_parameter = 0;
 constants.discount_factor = 0.8;
 
-constants.theta_init_upper_range = 1;
-constants.theta_init_lower_range = -1;
-
 constants.experience_replay = true;
 constants.experience_pool_size = 50000;
 constants.experience_replay_count = 8;
@@ -112,3 +109,10 @@ constants.experience_replay_count = 8;
 constants.epsilon_max = 1;
 constants.epsilon_min = 0.05;
 constants.epsilon_step = 0.0001;
+
+
+constants.random_call = 0;
+constants.random = function(){
+	constants.random_call++;
+	return (constants.random_call%1000)/1000;
+}

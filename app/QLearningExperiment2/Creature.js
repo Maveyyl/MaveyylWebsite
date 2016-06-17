@@ -27,15 +27,31 @@ module.exports = Creature;
 
 	this.sensors = new Array(constants.sensors.count).fill(0);
 
-	var theta = ml.ml_utils.nn_theta_create( constants.network );
-	theta = ml.ml_utils.nn_theta_random_init( theta, constants.theta_init_lower_range, constants.theta_init_upper_range, true);
+	// var theta = ml.ml_utils.nn_theta_create( constants.network );
+	// theta = ml.ml_utils.nn_theta_random_init( theta, constants.theta_init_lower_range, constants.theta_init_upper_range, true);
+
+
+
+	// this.nn = ml.linear_neural_network( [[]], [], theta, config);
+
+	function random_init(){
+		return Math.random()*2 - 1;
+		// return 0;
+	}
+
+	this.nn = new ml.NN.NeuralNetwork( ml.NN.utils.MSE );
+	for(var i=1;i<constants.network.length;i++){
+		this.nn.add_layer(
+			new ml.NN.FullyConnectedLayer( constants.network[i-1], constants.network[i], random_init, ml.NN.utils.ReLU, ml.NN.utils.ReLU_derivative)
+		);
+	}
 
 	var config = {
 		learning_rate: this.learning_rate,
 		regularization_parameter: this.regularization_parameter
 	};
-
-	this.nn = ml.linear_neural_network( [[]], [], theta, config);
+	this.gd = new ml.NN.GradientDescent( config );
+	this.gd_ctx = this.gd.init_gradient_descent_ctx()  ;
 
 	// keep track of what the creature has done, useful for statistics
 	this.track = {
@@ -296,7 +312,7 @@ Creature.prototype.update = function( ){
 
 	// add the current experience
 	var x = this.sensors.slice();
-	x.unshift(1);
+	// x.unshift(1);
 	experiences_to_learn.X.push(x);
 	experiences_to_learn.Y.push(rewards);
 
@@ -322,14 +338,17 @@ Creature.prototype.update = function( ){
 			replay_rewards[experience.action] = replay_reward;
 			
 			x = experience.state.slice();
-			x.unshift(1);
+			// x.unshift(1);
 			experiences_to_learn.X.push(x);
 			experiences_to_learn.Y.push(replay_rewards);
 		}
 
 	}
 
+	console.log(this.nn.check_gradient(experiences_to_learn.X, experiences_to_learn.Y, 0.00001));
+
 	// proceed to the learning
-	this.nn.gradient_step( experiences_to_learn.X, experiences_to_learn.Y);
+	// this.nn.gradient_step( experiences_to_learn.X, experiences_to_learn.Y);
+	this.gd.batched_gradient_descent( this.gd_ctx, experiences_to_learn.X, experiences_to_learn.Y, this.nn,  "compute_cost", "weights_update");
 
 };

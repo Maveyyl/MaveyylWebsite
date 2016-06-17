@@ -95,7 +95,7 @@
 					_this.avg_feed_graph = app.graphUtils.scalableGeneric2DGraph("avg-feed", _this.max_graph_dots,  _this.stats_update, 150);
 
 				
-					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta);
+					// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta);
 
 					window.creature = _this.world.creature;
 				}
@@ -114,22 +114,22 @@
 					// for each simulation updates to be done
 					for(var i=0;i<updates_to_do;i++){
 						// if we've reached a sufficient amount of simulation update we compute our stats
-						if( _this.world.creature.nn.iter_count % _this.stats_update === 0 ){
+						if( _this.world.creature.gd_ctx.iter_count % _this.stats_update === 0 ){
 
-							_this.nn_graph.update( _this.world.creature.nn.theta );
+							// _this.nn_graph.update( _this.world.creature.nn.theta );
 
 							// flush J or it can grow to millions of entries
-							_this.world.creature.nn.J = [];
+							_this.world.creature.gd_ctx.J = [];
 						}
 
 						_this.world.update();
 
-						_this.avg_error_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.nn.J[ _this.world.creature.nn.J.length -1]);
-						_this.avg_random_behavior_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.random_behavior);
-						_this.avg_reward_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.reward);
-						_this.avg_plant_nearby_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.plant_nearby);
-						_this.avg_eat_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.ate_plant);
-						_this.avg_feed_graph.update( _this.world.creature.nn.iter_count, _this.world.creature.track.fed_plant);
+						_this.avg_error_graph.update( _this.world.creature.gd_ctx.iter_count, _this.world.creature.gd_ctx.J[ _this.world.creature.gd_ctx.J.length -1]);
+						_this.avg_random_behavior_graph.update( _this.world.creature.gd_ctx.iter_count, _this.world.creature.track.random_behavior);
+						_this.avg_reward_graph.update( _this.world.creature.gd_ctx.iter_count, _this.world.creature.track.reward);
+						_this.avg_plant_nearby_graph.update( _this.world.creature.gd_ctx.iter_count, _this.world.creature.track.plant_nearby);
+						_this.avg_eat_graph.update( _this.world.creature.gd_ctx.iter_count, _this.world.creature.track.ate_plant);
+						_this.avg_feed_graph.update( _this.world.creature.gd_ctx.iter_count, _this.world.creature.track.fed_plant);
 					}
 
 					// update the rendering
