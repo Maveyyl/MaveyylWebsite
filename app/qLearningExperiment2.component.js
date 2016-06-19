@@ -81,7 +81,7 @@
 					// this is to keep track of the elapsed time since last simulation updates
 					_this.elapsed_time_cumul = 0;
 					// how often we want to compute stats and update graphes per simulation updates
-					_this.stats_update = _this.updates_per_second * 50;
+					_this.stats_update = _this.updates_per_second * 100;
 					// maximum number of dot to be displayed on graphes
 					_this.max_graph_dots = 200;
 
@@ -94,8 +94,18 @@
 					_this.avg_eat_graph = app.graphUtils.scalableGeneric2DGraph("avg-eat", _this.max_graph_dots,  _this.stats_update, 150);
 					_this.avg_feed_graph = app.graphUtils.scalableGeneric2DGraph("avg-feed", _this.max_graph_dots,  _this.stats_update, 150);
 
-				
-					// _this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, _this.world.creature.nn.theta);
+					// extracting the weights of the network
+					var weights = [];
+					for(var l=0;l<_this.world.creature.nn.layer_count;l++){
+						for(var i=0;i<_this.world.creature.nn.layers[l].input_unit_count;i++){
+							for(var o=0;o<_this.world.creature.nn.layers[l].output_unit_count;o++){
+								weights.push( _this.world.creature.nn.layers[l].weights[o][i]);
+							}
+						}
+					}
+
+					// creating neural network representation
+					_this.nn_graph = app.graphUtils.neuralNetworkGraph("nn-graph", _this.constants.network, weights);
 
 					window.creature = _this.world.creature;
 				}
@@ -116,7 +126,19 @@
 						// if we've reached a sufficient amount of simulation update we compute our stats
 						if( _this.world.creature.gd_ctx.iter_count % _this.stats_update === 0 ){
 
-							// _this.nn_graph.update( _this.world.creature.nn.theta );
+
+							// extracting the weights of the network
+							var weights = [];
+							for(var l=0;l<_this.world.creature.nn.layer_count;l++){
+								for(var i=0;i<_this.world.creature.nn.layers[l].input_unit_count;i++){
+									for(var o=0;o<_this.world.creature.nn.layers[l].output_unit_count;o++){
+										weights.push( _this.world.creature.nn.layers[l].weights[o][i]);
+									}
+								}
+							}
+
+							// updating neural network representation
+							_this.nn_graph.update(  weights );
 
 							// flush J or it can grow to millions of entries
 							_this.world.creature.gd_ctx.J = [];

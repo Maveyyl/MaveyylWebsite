@@ -35,7 +35,7 @@ module.exports = Creature;
 	// this.nn = ml.linear_neural_network( [[]], [], theta, config);
 
 	function random_init(){
-		return Math.random()*2 - 1;
+		return constants.random()*2 - 1;
 		// return 0;
 	}
 
@@ -256,16 +256,17 @@ Creature.prototype.update = function( ){
 
 	// take a decision
 	var action_choice;
-	if( Math.random() < this.random_behavior_probability ){
+	if( constants.random() < this.random_behavior_probability ){
 		// random decision
-		action_choice = Math.floor( Math.random()* constants.actions.count);
+		// console.log(z, ra, constants.actions.count, ra * constants.actions.count, Math.floor( ra * constants.actions.count) );
+		action_choice = Math.floor( constants.random() * constants.actions.count);
 		this.track.random_behavior = true;
 	}
 	else{
-		action_choice = predictions.indexOf( Math.max(...predictions) );
+		var max = Math.max(...predictions);
+		action_choice = predictions.indexOf( max );
 		this.track.random_behavior = false;
 	}
-
 
 
 	// compute the base reward for the chosen action
@@ -291,7 +292,7 @@ Creature.prototype.update = function( ){
 			this.experiences.shift();
 		}
 	}
-		
+
 	// update reward with future possible reward if goal action hasn't been reached
 	if( reward < constants.rewards.goal ){
 		var next_predictions = this.get_predictions(next_sensors);
@@ -302,6 +303,7 @@ Creature.prototype.update = function( ){
 	// preparing reward for the learning function
 	var rewards = predictions.slice();
 	rewards[action_choice] = reward;
+
 	
 	// learning phase
 	// prepare the experiences to learn
@@ -323,7 +325,7 @@ Creature.prototype.update = function( ){
 		// repeat according to experience_replay_count
 		for(var i=0;i<this.experience_replay_count;i++){
 			// pick randomly an old experience from the experience pool
-			var experience = this.experiences[  Math.floor( Math.random() * this.experiences.length ) ];
+			var experience = this.experiences[  Math.floor( constants.random() * this.experiences.length ) ];
 			
 			var replay_reward = experience.reward;
 			// update reward with future possible reward
@@ -345,7 +347,7 @@ Creature.prototype.update = function( ){
 
 	}
 
-	console.log(this.nn.check_gradient(experiences_to_learn.X, experiences_to_learn.Y, 0.00001));
+	// this.nn.check_gradient(experiences_to_learn.X, experiences_to_learn.Y, 0.00001);
 
 	// proceed to the learning
 	// this.nn.gradient_step( experiences_to_learn.X, experiences_to_learn.Y);

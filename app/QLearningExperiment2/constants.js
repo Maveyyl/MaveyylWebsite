@@ -111,8 +111,10 @@ constants.epsilon_min = 0.05;
 constants.epsilon_step = 0.0001;
 
 
+// tool used to render the simulation deterministic at will
 constants.random_call = 0;
 constants.random = function(){
-	constants.random_call++;
-	return (constants.random_call%1000)/1000;
+	// constants.random_call++;
+	// return ((constants.random_call)*7%1000)/1000;
+	return Math.random();
 }

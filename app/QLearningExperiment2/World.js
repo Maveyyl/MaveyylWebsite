@@ -27,8 +27,8 @@ function World(){
 
 	// spawn plants randomly
 	while( this.plant_count < this.plant_count_max ) {
-		var x = Math.trunc( Math.random()*this.map_size );
-		var y = Math.trunc( Math.random()*this.map_size );
+		var x = Math.trunc( constants.random()*this.map_size );
+		var y = Math.trunc( constants.random()*this.map_size );
 		
 		if( this.map[y][x].empty ){
 			this.map[y][x].set_entity( new Plant( this ));
@@ -38,8 +38,8 @@ function World(){
 
 	// creates creature and places it at random empty location
 	while( this.creature === undefined ){
-		var x = Math.trunc( Math.random()*this.map_size );
-		var y = Math.trunc( Math.random()*this.map_size );
+		var x = Math.trunc( constants.random()*this.map_size );
+		var y = Math.trunc( constants.random()*this.map_size );
 		
 		if( this.map[y][x].empty ){
 			this.map[y][x].set_entity( new Creature(this));
@@ -51,8 +51,8 @@ function World(){
 World.prototype.update = function(explore, verbose){
 	// spawn plants randomly if needed
 	while( this.plant_count < this.plant_count_max ) {
-		var x = Math.trunc( Math.random()*this.map_size );
-		var y = Math.trunc( Math.random()*this.map_size );
+		var x = Math.trunc( constants.random()*this.map_size );
+		var y = Math.trunc( constants.random()*this.map_size );
 		
 		if( this.map[y][x].empty ){
 			this.map[y][x].set_entity( new Plant( this ));
