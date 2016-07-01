@@ -1,24 +1,17 @@
 var constants = {};
 module.exports= constants;
 
-/*
- * Map
- */
-constants.map_size = 15;
-constants.plant_count = 30;
-constants.plant_recover_steps = 50;
-constants.food_decay = false;
-constants.food_decay_steps = 20;
+
 
 
 /*
  * Rewards
  */
 constants.rewards = {
-	neutral: 20,
-	no_move: 0,
+	neutral: 0,
+	no_action: 0,
 	forbidden_action: 0,
-	eat: 100
+	goal: 100
 };
 
 
@@ -29,19 +22,11 @@ constants.rewards = {
 constants.entities = {
 	none: 0,
 	creature: 1,
-	plant: 2,
-	dead_plant: 3,
-	food: 4
+	small_plant: 2,
+	medium_plant: 3,
+	big_plant: 4
 };
 
-
-constants.entities_render = [
-	" ",
-	"@",
-	"T",
-	"x",
-	"o"
-];
 
 /*
  * Directions
@@ -62,9 +47,9 @@ constants.actions = {
 	move_top: 1,
 	move_right: 2,
 	move_bottom: 3,
-	stay: 4,
-	hit: 5,
-	eat: 6,
+	feed_plants: 4,
+	eat_plants: 5,
+	do_nothing: 6,
 	count: 7
 };
 
@@ -74,41 +59,62 @@ constants.actions = {
  * Sensors
  */
 constants.sensors = {
-	plant_left: 0,
-	plant_top: 1,
-	plant_right: 2,
-	plant_bottom: 3,
-	dead_plant_left: 4,
-	dead_plant_top: 5,
-	dead_plant_right: 6,
-	dead_plant_bottom: 7,
-	food_left: 8,
-	food_top: 9,
-	food_right: 10,
-	food_bottom: 11,
-	count: 12
-};
+	small_plant_left: 0,
+	small_plant_top: 1,
+	small_plant_right: 2,
+	small_plant_bottom: 3,
 
-constants.sensors_range = 1;
-constants.sensors_distance_detection_value= 100;
+	medium_plant_left: 4,
+	medium_plant_top: 5,
+	medium_plant_right: 6,
+	medium_plant_bottom: 7,
+
+	big_plant_left: 8,
+	big_plant_top: 9,
+	big_plant_right: 10,
+	big_plant_bottom: 11,
+
+	something_left: 12,
+	something_top: 13,
+	something_right: 14,
+	something_bottom: 15,
+
+	count: 16,
+};
+constants.sensor_activation_value = 100;
+constants.sensor_distance_detection = 3;
+
+
+/*
+ * Map
+ */
+constants.map_size = 15;
+constants.plant_count_max = 20;
+
 
 
 /*
  * Neural Network
  */
-constants.network = [ constants.sensors.count, 15, constants.actions.count ];
-constants.learning_rate = 0.00001;
+constants.network = [ constants.sensors.count, 20, constants.actions.count ];
+constants.learning_rate = 0.00003;
 constants.regularization_parameter = 0;
-constants.discount_factor = 0.7;
+constants.discount_factor = 0.8;
 
-constants.theta_init_upper_range = 1;
-constants.theta_init_lower_range = -1;
-
-constants.experience_replay = false;
-constants.experience_pool_size = 50000;
-constants.experience_replay_count = 2;
+constants.experience_replay = true;
+constants.experience_pool_size = 30000;
+constants.experience_replay_count = 10;
 
 
 constants.epsilon_max = 1;
-constants.epsilon_min = 0.1;
-constants.epsilon_step = 0.00005;
+constants.epsilon_min = 0.05;
+constants.epsilon_step = 0.0001;
+
+
+// tool used to render the simulation deterministic at will
+constants.random_call = 0;
+constants.random = function(){
+	// constants.random_call++;
+	// return ((constants.random_call)*7%1000)/1000;
+	return Math.random();
+}

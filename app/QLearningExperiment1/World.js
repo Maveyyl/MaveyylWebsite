@@ -1,8 +1,7 @@
 var constants = require("./constants.js");
 var Tile = require("./Tile.js");
-var Plant = require("./Plant.js");
 var Creature = require("./Creature.js");
-var Food = require("./Food.js");
+var Plant = require("./Plant.js");
 
 module.exports = World;
 
@@ -12,9 +11,10 @@ module.exports = World;
 function World(){
 	this.map = [];
 	this.map_size = constants.map_size;
-	this.plant_count = constants.plant_count;
 	this.creature = undefined;
 
+	this.plant_count = 0;
+	this.plant_count_max = constants.plant_count_max;
 
 
 	// instanciating the map	
@@ -25,37 +25,50 @@ function World(){
 			this.map[y][x] = new Tile(this, [x,y]);
 	}
 
-	// randomly placing plants at creation of the world
-	var plant_spawned = 0;
-	while( plant_spawned < this.plant_count ){
-		var x = Math.trunc( Math.random()*this.map_size );
-		var y = Math.trunc( Math.random()*this.map_size );
-		if( this.map[y][x].entity_type === constants.entities.none ){
-			this.map[y][x].set_entity( new Plant(this, [x,y]) );
-		}
-
-		plant_spawned++;
-	}
-	
-	while( this.creature === undefined ){
-		var x = Math.trunc( Math.random()*this.map_size );
-		var y = Math.trunc( Math.random()*this.map_size );
+	// spawn plants randomly
+	while( this.plant_count < this.plant_count_max ) {
+		var x = Math.trunc( constants.random()*this.map_size );
+		var y = Math.trunc( constants.random()*this.map_size );
 		
-		if( this.map[y][x].entity_type === constants.entities.none ){
-			this.map[y][x].set_entity(new Creature(this, [x,y]));
+		if( this.map[y][x].empty ){
+			this.map[y][x].set_entity( new Plant( this ));
+			this.plant_count++;
+		}
+	}
+
+	// creates creature and places it at random empty location
+	while( this.creature === undefined ){
+		var x = Math.trunc( constants.random()*this.map_size );
+		var y = Math.trunc( constants.random()*this.map_size );
+		
+		if( this.map[y][x].empty ){
+			this.map[y][x].set_entity( new Creature(this));
 			this.creature = this.map[y][x].entity;
 		}
-
 	}
 }
 
 World.prototype.update = function(explore, verbose){
+	// spawn plants randomly if needed
+	while( this.plant_count < this.plant_count_max ) {
+		var x = Math.trunc( constants.random()*this.map_size );
+		var y = Math.trunc( constants.random()*this.map_size );
+		
+		if( this.map[y][x].empty ){
+			this.map[y][x].set_entity( new Plant( this ));
+			this.plant_count++;
+		}
+	}
+
+	// update all tiles except the creature tile
 	for(var y=0;y<this.map_size;y++){
 		for(var x=0;x<this.map_size;x++){
-			if( this.map[y][x].update && this.map[y][x].entity_type !== constants.entities.creature ){
-				this.map[y][x].update(explore, verbose);
+			if( !this.map[y][x].empty && this.map[y][x].entity.type !== constants.entities.creature ){
+				this.map[y][x].update();
 			}
 		}
 	}
-	this.creature.update(explore,verbose);
+
+	// update creature
+	this.creature.update();
 };

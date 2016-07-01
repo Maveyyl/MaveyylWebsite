@@ -34,13 +34,13 @@
 					templateUrl: "templates/machine_learning/q_learning_experiment_1_page.html",
 					directives: [app.components.qLearningExperiment1]
 				},
-				{
-					name: "QLearningExperimentsPage2",
-					description: "Q Learning Experiments2",
-					path: "/q_learning_experiments2",
-					templateUrl: "templates/machine_learning/q_learning_experiment_2_page.html",
-					directives: [app.components.qLearningExperiment2]
-				}
+				// {
+				// 	name: "QLearningExperimentsPage2",
+				// 	description: "Q Learning Experiments2",
+				// 	path: "/q_learning_experiments2",
+				// 	templateUrl: "templates/machine_learning/q_learning_experiment_2_page.html",
+				// 	directives: [app.components.qLearningExperiment2]
+				// }
 			]
 		},
 		{

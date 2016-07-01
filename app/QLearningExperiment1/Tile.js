@@ -9,23 +9,23 @@ function Tile(world, pos){
 	this.world = world;
 	this.pos = pos;
 
-	this.entity_type = constants.entities.none;
+	this.empty = true;
 	this.entity = undefined;
 }
-Tile.prototype.update = function(explore, verbose){
+Tile.prototype.update = function(){
 	if( this.entity && this.entity.update )
-		this.entity.update(explore,verbose);
+		this.entity.update();
 };
 Tile.prototype.set_entity = function( entity ){
 	this.entity = entity;
-	this.entity_type = entity.type;
+	this.empty = false;
 	entity.tile = this;
 };
 Tile.prototype.set_empty = function(){
-	if( this.entity )
+	if( !this.empty )
 		this.entity.tile = undefined;
 	this.entity = undefined;
-	this.entity_type = constants.entities.none;
+	this.empty = true;
 };
 
 Tile.prototype.get_neighbour_tile = function( direction){
