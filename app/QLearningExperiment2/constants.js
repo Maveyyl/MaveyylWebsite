@@ -41,7 +41,8 @@ constants.actions = {
 	move_right: 3,
 	move_bottom_right: 4,
 	move_bottom_left: 5,
-	count: 6
+	no_move: 6,
+	count: 7
 };
 
 
@@ -72,6 +73,15 @@ constants.init_map = [
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
 ];
+constants.get_virgin_map_with_walls = function(){
+	return [
+		[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+	];
+};
 constants.get_virgin_map = function(){
 	return [
 		[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -80,13 +90,12 @@ constants.get_virgin_map = function(){
 		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
 	];
-}
-
+};
 
 
 /*
  * Sensors
- * Sensors will be a 3d map of size 6 x 13 x 5
+ * Sensors will be a 3d map of size 6 x 13 x 6
  * 1 is  the map with the walls
  * 2 is the map with the left player
  * 3 is the map with the right player
